@@ -21,7 +21,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     const StatsScreen(),
   ];
 
-  void changeScreen(int newIndex) {
+  void onScreenChange(int newIndex) {
     setState(() {
       index = newIndex;
     });
@@ -31,8 +31,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: screens[index],
-      bottomNavigationBar: SizedBox(
-        height: 80,
+      bottomNavigationBar: Container(
+        color: Colors.white,
+        height: 100,
+        padding: const EdgeInsets.only(top: 15),
         child: Row(
           children: [
             NavigationButton(
@@ -40,21 +42,21 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     ? FluentIcons.timer_12_filled
                     : FluentIcons.timer_12_regular,
                 text: "Timer",
-                onTap: changeScreen,
+                onTap: onScreenChange,
                 index: 0),
             NavigationButton(
                 icon: index == 1
                     ? FluentIcons.calendar_12_filled
                     : FluentIcons.calendar_12_regular,
                 text: "Today",
-                onTap: changeScreen,
+                onTap: onScreenChange,
                 index: 1),
             NavigationButton(
                 icon: index == 2
                     ? FluentIcons.chart_multiple_20_filled
                     : FluentIcons.chart_multiple_20_regular,
                 text: "Stats",
-                onTap: changeScreen,
+                onTap: onScreenChange,
                 index: 2),
           ],
         ),

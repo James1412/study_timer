@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:study_timer/screens/timer_screen.dart';
+import 'package:study_timer/features/navigation/main_navigation_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +13,7 @@ class StudyTimerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: TimerScreen(),
+      home: MainNavigationScreen(),
     );
   }
 }

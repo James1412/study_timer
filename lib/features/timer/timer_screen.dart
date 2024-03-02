@@ -1,7 +1,5 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class TimerScreen extends StatefulWidget {
   const TimerScreen({super.key});
@@ -23,14 +21,14 @@ class _TimerScreenState extends State<TimerScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+        padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
               "00 : 00 : 00",
               style: TextStyle(
-                fontSize: 65,
+                fontSize: 60,
                 fontWeight: FontWeight.w600,
               ),
             ),

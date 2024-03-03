@@ -4,10 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+import 'package:study_timer/features/home/models/study_time_model.dart';
+import 'package:study_timer/features/home/view%20models/study_date_vm.dart';
 import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
-import 'package:study_timer/features/timer/widgets/time_card.dart';
+import 'package:study_timer/features/timer/widgets/timer_widget.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class TimerScreen extends StatefulWidget {
@@ -129,7 +132,18 @@ class _TimerScreenState extends State<TimerScreen> {
             textStyle: TextStyle(color: blueButtonColor),
             child: const Text("Done"),
             onPressed: () {
-              print(controller!.text + duration.toString());
+              if (duration < const Duration(minutes: 1) &&
+                  duration > const Duration(minutes: 0)) {
+                duration = const Duration(minutes: 1);
+              }
+              StudyTimeModel studyTimeModel = StudyTimeModel(
+                  subjectName: controller!.text,
+                  dateTime: DateTime.now(),
+                  duration: duration,
+                  uniqueKey: UniqueKey().hashCode);
+              context
+                  .read<StudyDateViewModel>()
+                  .addStudyTimeModel(studyTimeModel);
               if (timer != null) {
                 duration = const Duration();
                 timer!.cancel();
@@ -159,31 +173,34 @@ class _TimerScreenState extends State<TimerScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text("Study Timer"),
-        leading: CupertinoButton(
-          padding: const EdgeInsets.only(left: 10.0),
-          onPressed: onClearTap,
-          child: Text(
-            "Clear",
-            style: TextStyle(
-              color: redButtonColor,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+        leading: !isPlaying && timer != null
+            ? CupertinoButton(
+                padding: const EdgeInsets.only(left: 10.0),
+                onPressed: onClearTap,
+                child: Text(
+                  "Clear",
+                  style: TextStyle(
+                    color: redButtonColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            : null,
         actions: [
-          CupertinoButton(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            onPressed: onDoneTap,
-            child: Text(
-              "Done",
-              style: TextStyle(
-                color: blueButtonColor,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+          if (!isPlaying && timer != null)
+            CupertinoButton(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              onPressed: onDoneTap,
+              child: Text(
+                "Done",
+                style: TextStyle(
+                  color: blueButtonColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
         ],
       ),
       body: Padding(
@@ -191,25 +208,7 @@ class _TimerScreenState extends State<TimerScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                TimeCard(text: hours),
-                const Text(
-                  ":",
-                  style: TextStyle(fontSize: 60, fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center,
-                ),
-                TimeCard(text: minutes),
-                const Text(
-                  ":",
-                  style: TextStyle(fontSize: 60, fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center,
-                ),
-                TimeCard(text: seconds),
-              ],
-            ),
+            TimerWidget(hours: hours, minutes: minutes, seconds: seconds),
             const Gap(50),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),

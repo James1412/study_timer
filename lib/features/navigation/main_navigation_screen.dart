@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:study_timer/features/navigation/widgets/navigation_button.dart';
 import 'package:study_timer/features/home/home_screen.dart';
+import 'package:study_timer/features/navigation/widgets/navigation_button.dart';
 import 'package:study_timer/features/stats/stats_screen.dart';
 import 'package:study_timer/features/timer/timer_screen.dart';
 
@@ -17,11 +17,6 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int index = 0;
-  List<Widget> screens = [
-    const TimerScreen(),
-    const HomeScreen(),
-    const StatsScreen(),
-  ];
 
   void onScreenChange(int newIndex) {
     if (Platform.isIOS) {
@@ -35,7 +30,23 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: screens[index],
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          Offstage(
+            offstage: index != 0,
+            child: const TimerScreen(),
+          ),
+          Offstage(
+            offstage: index != 1,
+            child: const HomeScreen(),
+          ),
+          Offstage(
+            offstage: index != 2,
+            child: const StatsScreen(),
+          ),
+        ],
+      ),
       bottomNavigationBar: Container(
         height: 85,
         padding: const EdgeInsets.only(top: 10),

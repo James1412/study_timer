@@ -4,9 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
 import 'package:study_timer/features/timer/widgets/time_card.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class TimerScreen extends StatefulWidget {
   const TimerScreen({super.key});
@@ -39,7 +41,7 @@ class _TimerScreenState extends State<TimerScreen> {
     });
   }
 
-  void togglePlay() {
+  void togglePlay() async {
     if (Platform.isIOS) {
       HapticFeedback.heavyImpact();
     }
@@ -48,9 +50,20 @@ class _TimerScreenState extends State<TimerScreen> {
     });
     if (isPlaying) {
       startTimer();
+      try {
+        await ScreenBrightness().setScreenBrightness(0.2);
+      } catch (e) {
+        //print(e);
+      }
     } else {
       stopTimer();
+      try {
+        await ScreenBrightness().resetScreenBrightness();
+      } catch (e) {
+        //print(e);
+      }
     }
+    WakelockPlus.toggle(enable: isPlaying);
   }
 
   void onClearTap() {
@@ -92,8 +105,12 @@ class _TimerScreenState extends State<TimerScreen> {
       builder: (context) => CupertinoAlertDialog(
         title: const Text("Done studying?"),
         content: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          padding: const EdgeInsets.only(top: 10.0),
           child: CupertinoTextField(
+            autofocus: true,
+            spellCheckConfiguration: SpellCheckConfiguration(
+              spellCheckService: DefaultSpellCheckService(),
+            ),
             placeholder: "Subject name",
             controller: controller,
             cursorColor: blueButtonColor,

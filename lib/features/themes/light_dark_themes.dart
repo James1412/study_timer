@@ -3,7 +3,7 @@ import 'package:study_timer/features/themes/colors.dart';
 
 ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
-  scaffoldBackgroundColor: const Color(0xfff2f2f2),
+  scaffoldBackgroundColor: lightBackground,
   textTheme: Typography.blackCupertino,
   colorScheme: ColorScheme.light(
     secondary: lightNavigationBar,

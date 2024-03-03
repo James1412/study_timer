@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:study_timer/features/themes/dark%20mode/dark_mode_mvvm.dart';
+import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
 
 class SettingsScreen extends StatefulWidget {

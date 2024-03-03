@@ -4,7 +4,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:study_timer/features/navigation/widgets/navigation_button.dart';
-import 'package:study_timer/features/today_record/home_screen.dart';
+import 'package:study_timer/features/home/home_screen.dart';
 import 'package:study_timer/features/stats/stats_screen.dart';
 import 'package:study_timer/features/timer/timer_screen.dart';
 
@@ -59,9 +59,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             ),
             NavigationButton(
               icon: index == 1
-                  ? FluentIcons.calendar_12_filled
-                  : FluentIcons.calendar_12_regular,
-              text: "Today",
+                  ? FluentIcons.home_12_filled
+                  : FluentIcons.home_12_regular,
+              text: "Home",
               onTap: onScreenChange,
               index: 1,
             ),

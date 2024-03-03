@@ -9,6 +9,7 @@ ThemeData lightTheme = ThemeData(
     secondary: lightNavigationBar,
   ),
   appBarTheme: AppBarTheme(
+    scrolledUnderElevation: 0.0,
     backgroundColor: lightBackground,
     surfaceTintColor: lightBackground,
     shadowColor: lightBackground,
@@ -28,6 +29,7 @@ ThemeData darkTheme = ThemeData(
     secondary: darkNavigationBar,
   ),
   appBarTheme: AppBarTheme(
+    scrolledUnderElevation: 0.0,
     backgroundColor: darkBackground,
     surfaceTintColor: darkBackground,
     shadowColor: darkBackground,

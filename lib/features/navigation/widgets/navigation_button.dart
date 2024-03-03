@@ -22,7 +22,10 @@ class NavigationButton extends StatelessWidget {
           child: Column(
             children: [
               Icon(icon),
-              Text(text),
+              Text(
+                text,
+                style: const TextStyle(fontSize: 12.5),
+              ),
             ],
           ),
         ),

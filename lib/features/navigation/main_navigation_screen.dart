@@ -1,8 +1,9 @@
+import 'dart:io';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:study_timer/features/navigation/widgets/navigation_button.dart';
-import 'package:study_timer/features/themes/light_dark_themes.dart';
 import 'package:study_timer/features/today_record/home_screen.dart';
 import 'package:study_timer/features/stats/stats_screen.dart';
 import 'package:study_timer/features/timer/timer_screen.dart';
@@ -23,6 +24,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   ];
 
   void onScreenChange(int newIndex) {
+    if (Platform.isIOS) {
+      HapticFeedback.lightImpact();
+    }
     setState(() {
       index = newIndex;
     });
@@ -33,10 +37,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     return Scaffold(
       body: screens[index],
       bottomNavigationBar: Container(
-        height: 100,
-        padding: const EdgeInsets.only(top: 15),
+        height: 85,
+        padding: const EdgeInsets.only(top: 10),
         decoration: BoxDecoration(
-          color: lightNavigationBar,
+          color: Theme.of(context).colorScheme.secondary,
           border: const Border(
               top: BorderSide(
             color: Colors.grey,

@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:study_timer/features/themes/colors.dart';
 
 ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
   scaffoldBackgroundColor: const Color(0xfff2f2f2),
   textTheme: Typography.blackCupertino,
+  colorScheme: ColorScheme.light(
+    secondary: lightNavigationBar,
+  ),
   appBarTheme: AppBarTheme(
     backgroundColor: lightBackground,
     surfaceTintColor: lightBackground,
     shadowColor: lightBackground,
+    titleTextStyle: const TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      color: Colors.black,
+    ),
   ),
 );
 
@@ -15,14 +24,17 @@ ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   scaffoldBackgroundColor: darkBackground,
   textTheme: Typography.whiteCupertino,
+  colorScheme: ColorScheme.dark(
+    secondary: darkNavigationBar,
+  ),
   appBarTheme: AppBarTheme(
     backgroundColor: darkBackground,
     surfaceTintColor: darkBackground,
     shadowColor: darkBackground,
+    titleTextStyle: const TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      color: Colors.white,
+    ),
   ),
 );
-
-Color darkBackground = const Color(0xff1C1D22);
-Color darkNavigationBar = const Color(0xff22232A);
-Color lightBackground = const Color(0xfff2f2f2);
-Color lightNavigationBar = const Color(0x000fffff);

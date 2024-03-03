@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:study_timer/features/themes/colors.dart';
 
 class TimerScreen extends StatefulWidget {
   const TimerScreen({super.key});
@@ -10,26 +13,49 @@ class TimerScreen extends StatefulWidget {
 
 class _TimerScreenState extends State<TimerScreen> {
   bool isPlaying = false;
+
+  void togglePlay() {
+    if (Platform.isIOS) {
+      HapticFeedback.heavyImpact();
+    }
+    setState(() {
+      isPlaying = !isPlaying;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          "Focus",
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
+        title: const Text("Study Timer"),
+        actions: [
+          CupertinoButton(
+            child: Text(
+              "Done",
+              style: TextStyle(
+                color: blueButtonColor,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "00 : 00 : 00",
-              style: TextStyle(
-                fontSize: 60,
-                fontWeight: FontWeight.w600,
+            const FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                "00 : 00 : 00",
+                style: TextStyle(
+                  fontSize: 60,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             const SizedBox(
@@ -37,16 +63,12 @@ class _TimerScreenState extends State<TimerScreen> {
             ),
             CupertinoButton(
               padding: EdgeInsets.zero,
-              onPressed: () {
-                setState(() {
-                  isPlaying = !isPlaying;
-                });
-              },
+              onPressed: togglePlay,
               child: Container(
                 width: double.maxFinite,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: const Color(0xff607AFC),
+                  color: blueButtonColor,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Center(

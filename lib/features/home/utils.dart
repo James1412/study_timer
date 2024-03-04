@@ -6,3 +6,10 @@ bool isSameDate(DateTime date1, DateTime date2) {
 DateTime onlyDate(DateTime dateTime) {
   return DateTime(dateTime.year, dateTime.month, dateTime.day);
 }
+
+bool isToday(DateTime date) {
+  return DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+      .isAtSameMomentAs(
+    DateTime(date.year, date.month, date.day),
+  );
+}

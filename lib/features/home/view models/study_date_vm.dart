@@ -1,76 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:study_timer/features/home/models/date_model.dart';
 import 'package:study_timer/features/home/models/study_time_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 
-class StudyDateViewModel extends ChangeNotifier {
+class StudySessionViewModel extends ChangeNotifier {
   int firstKey = UniqueKey().hashCode;
   int secondKey = UniqueKey().hashCode;
   int thirdKey = UniqueKey().hashCode;
-  late List<DateModel> studyDates = [
-    DateModel(studyTimes: [
-      StudyTimeModel(
-        subjectName: 'history',
-        dateTime: DateTime.now().subtract(const Duration(days: 2)),
-        duration: const Duration(hours: 2),
-        uniqueKey: firstKey,
-      ),
-    ], date: DateTime.now().subtract(const Duration(days: 2))),
-    DateModel(
-        studyTimes: [], date: DateTime.now().subtract(const Duration(days: 1))),
-    DateModel(studyTimes: [
-      StudyTimeModel(
-        subjectName: 'math',
-        dateTime: DateTime.now(),
-        duration: const Duration(hours: 2, minutes: 34, seconds: 29),
-        uniqueKey: secondKey,
-      ),
-      StudyTimeModel(
-        subjectName: 'science',
-        dateTime: DateTime.now(),
-        duration: const Duration(hours: 1),
-        uniqueKey: thirdKey,
-      ),
-    ], date: DateTime.now()),
+  int fourthKey = UniqueKey().hashCode;
+  late List<StudySessionModel> studySessions = [
+    StudySessionModel(
+      subjectName: 'history',
+      dateTime: onlyDate(DateTime.now()).subtract(const Duration(days: 2)),
+      duration: const Duration(hours: 2),
+      uniqueKey: firstKey,
+    ),
+    StudySessionModel(
+      subjectName: 'math',
+      dateTime: onlyDate(DateTime.now()).subtract(const Duration(days: 1)),
+      duration: const Duration(hours: 2, minutes: 34, seconds: 29),
+      uniqueKey: secondKey,
+    ),
+    StudySessionModel(
+      subjectName: 'science',
+      dateTime: onlyDate(DateTime.now()),
+      duration: const Duration(hours: 1),
+      uniqueKey: thirdKey,
+    ),
+    StudySessionModel(
+      subjectName: 'science1',
+      dateTime: onlyDate(DateTime.now()),
+      duration: const Duration(hours: 1),
+      uniqueKey: fourthKey,
+    ),
   ];
 
-  void deleteStudyTimeModel(StudyTimeModel studyTimeModel) {
-    for (DateModel studyDate in studyDates) {
-      if (isSameDate(studyDate.date, studyTimeModel.dateTime)) {
-        studyDate.studyTimes.removeWhere(
-            (element) => element.uniqueKey == studyTimeModel.uniqueKey);
-      }
-    }
-    studyDates.removeWhere((date) => date.studyTimes.isEmpty);
+  late List<DateTime> studyDates =
+      studySessions.map((e) => e.dateTime).toSet().toList();
+
+  void deleteStudySession(StudySessionModel studyTimeModel) {
+    studySessions.removeWhere(
+        (element) => element.uniqueKey == studyTimeModel.uniqueKey);
+    studyDates = studySessions.map((e) => e.dateTime).toSet().toList();
     notifyListeners();
   }
 
-  void editStudyTimeModel(StudyTimeModel studyTimeModel) {
-    for (DateModel studyDate in studyDates) {
-      if (isSameDate(studyDate.date, studyTimeModel.dateTime)) {
-        studyDate.studyTimes.map((element) {
-          if (element.uniqueKey == studyTimeModel.uniqueKey) {
-            return element = studyTimeModel;
-          }
-        });
+  void editStudySession(StudySessionModel studyTimeModel) {
+    studySessions.map((element) {
+      if (element.uniqueKey == studyTimeModel.uniqueKey) {
+        return element = studyTimeModel;
       }
-    }
+    });
     notifyListeners();
   }
 
-  void addStudyTimeModel(StudyTimeModel studyTimeModel) {
-    for (DateModel studyDate in studyDates) {
-      if (isSameDate(studyDate.date, studyTimeModel.dateTime)) {
-        studyDate.studyTimes.add(studyTimeModel);
-        notifyListeners();
-        return;
-      }
-    }
-    studyDates.add(
-      DateModel(
-          studyTimes: [studyTimeModel],
-          date: onlyDate(studyTimeModel.dateTime)),
-    );
+  void addStudySession(StudySessionModel studyTimeModel) {
+    studySessions.add(studyTimeModel);
     notifyListeners();
+    return;
   }
 }

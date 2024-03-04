@@ -1,10 +1,10 @@
-class StudyTimeModel {
+class StudySessionModel {
   String subjectName;
   Duration duration;
   DateTime dateTime;
   int uniqueKey;
 
-  StudyTimeModel({
+  StudySessionModel({
     required this.subjectName,
     required this.dateTime,
     required this.duration,

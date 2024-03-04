@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:study_timer/features/home/models/study_time_model.dart';
+import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view%20models/study_date_vm.dart';
 import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
@@ -136,14 +137,14 @@ class _TimerScreenState extends State<TimerScreen> {
                   duration > const Duration(minutes: 0)) {
                 duration = const Duration(minutes: 1);
               }
-              StudyTimeModel studyTimeModel = StudyTimeModel(
+              StudySessionModel studyTimeModel = StudySessionModel(
                   subjectName: controller!.text,
-                  dateTime: DateTime.now(),
+                  dateTime: onlyDate(DateTime.now()),
                   duration: duration,
                   uniqueKey: UniqueKey().hashCode);
               context
-                  .read<StudyDateViewModel>()
-                  .addStudyTimeModel(studyTimeModel);
+                  .read<StudySessionViewModel>()
+                  .addStudySession(studyTimeModel);
               if (timer != null) {
                 duration = const Duration();
                 timer!.cancel();

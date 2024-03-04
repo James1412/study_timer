@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:duration/duration.dart';
 import 'package:duration/locale.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:study_timer/features/home/models/date_model.dart';
 import 'package:study_timer/features/home/models/study_time_model.dart';
+import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view%20models/study_date_vm.dart';
 import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
@@ -24,10 +22,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late PageController pageController =
-      PageController(initialPage: dates.length - 1);
-
-  late List<DateModel> dates = context.watch<StudyDateViewModel>().studyDates;
+  late PageController pageController = PageController(
+      initialPage:
+          context.watch<StudySessionViewModel>().studyDates.length - 1);
 
   @override
   void dispose() {
@@ -35,16 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  bool isToday(DateTime date) {
-    return DateTime(
-            DateTime.now().year, DateTime.now().month, DateTime.now().day)
-        .isAtSameMomentAs(
-      DateTime(date.year, date.month, date.day),
-    );
-  }
-
   late TextEditingController _editController;
-  void onEditTap(StudyTimeModel studyTimeModel) async {
+  void onEditTap(StudySessionModel studyTimeModel) async {
     _editController = TextEditingController(text: studyTimeModel.subjectName);
     await showCupertinoDialog(
       context: context,
@@ -74,7 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   context: context,
                   builder: (context) => CupertinoAlertDialog(
                     title: const Text("Delete the study session?"),
-                    content: const Text("This will permanently delete it"),
+                    content:
+                        const Text("This will permanently delete the session"),
                     actions: [
                       CupertinoDialogAction(
                         isDefaultAction: true,
@@ -89,8 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: const Text("Delete"),
                         onPressed: () {
                           context
-                              .read<StudyDateViewModel>()
-                              .deleteStudyTimeModel(studyTimeModel);
+                              .read<StudySessionViewModel>()
+                              .deleteStudySession(studyTimeModel);
                           Navigator.pop(context);
                           Navigator.pop(context);
                         },
@@ -115,11 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (Platform.isIOS) {
                   HapticFeedback.lightImpact();
                 }
-                StudyTimeModel newStudyModel = studyTimeModel
+                StudySessionModel newStudyModel = studyTimeModel
                   ..subjectName = _editController.text;
                 context
-                    .read<StudyDateViewModel>()
-                    .editStudyTimeModel(newStudyModel);
+                    .read<StudySessionViewModel>()
+                    .editStudySession(newStudyModel);
                 Navigator.pop(context);
               },
             ),
@@ -130,31 +120,43 @@ class _HomeScreenState extends State<HomeScreen> {
     _editController.dispose();
   }
 
+  Duration getTotalDuration(List studyDates, index) {
+    Duration totalDuration = const Duration();
+    for (StudySessionModel studyTimeModel
+        in context.watch<StudySessionViewModel>().studySessions) {
+      if (isSameDate(studyDates[index], studyTimeModel.dateTime)) {
+        totalDuration += studyTimeModel.duration;
+      }
+    }
+    return totalDuration;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return dates.isEmpty
+    List<DateTime> studyDates =
+        context.watch<StudySessionViewModel>().studyDates;
+    List<StudySessionModel> studySessions =
+        context.watch<StudySessionViewModel>().studySessions;
+    return studyDates.isEmpty
         ? const Center(
-            child: Text("No study time yet..."),
+            child: Text("No study session yet..."),
           )
         : PageView.builder(
-            itemCount: dates.length,
+            itemCount: studyDates.length,
             scrollDirection: Axis.horizontal,
             controller: pageController,
             physics: const PageScrollPhysics(),
             itemBuilder: (context, index) {
-              Duration totalDuration = const Duration();
-              Duration getDuration(int index) {
-                for (var element in dates[index].studyTimes) {
-                  totalDuration += element.duration;
-                }
-                return totalDuration;
-              }
+              List<StudySessionModel> studySessionsOnDate = studySessions
+                  .where((element) =>
+                      isSameDate(element.dateTime, studyDates[index]))
+                  .toList();
 
               return Scaffold(
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(
                   title: Text(
-                      "${DateFormat.yMEd().format(dates[index].date)}${isToday(dates[index].date) ? " (Today)" : ''}"),
+                      "${DateFormat.yMEd().format(studyDates[index])}${isToday(studyDates[index]) ? " (Today)" : ''}"),
                 ),
                 body: ListView(
                   children: [
@@ -172,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Text(
                             prettyDuration(
-                              getDuration(index),
+                              getTotalDuration(studyDates, index),
                               tersity: DurationTersity.minute,
                               abbreviated: true,
                               conjunction: ' ',
@@ -183,24 +185,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           const Gap(15),
-                          Center(
-                            child: SizedBox(
-                              height: 120,
-                              width: 120,
-                              child: PieChart(
-                                PieChartData(
-                                  sections: [
-                                    for (StudyTimeModel studyTimeModel
-                                        in dates[index].studyTimes)
-                                      PieChartSectionData(
-                                        value: studyTimeModel.duration.inMinutes
-                                            .toDouble(),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -208,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: dates[index].studyTimes.length,
+                      itemCount: studySessionsOnDate.length,
                       itemBuilder: (context, studyIndex) => ListTile(
                         leading: Container(
                           width: 45,
@@ -222,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         title: Text(
                           prettyDuration(
                             locale: const EnglishDurationLocale(),
-                            dates[index].studyTimes[studyIndex].duration,
+                            studySessionsOnDate[studyIndex].duration,
                             tersity: DurationTersity.minute,
                             upperTersity: DurationTersity.hour,
                             abbreviated: true,
@@ -231,11 +215,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: const TextStyle(fontWeight: FontWeight.w700),
                         ),
                         subtitle: Text(
-                          dates[index].studyTimes[studyIndex].subjectName,
+                          studySessionsOnDate[studyIndex].subjectName,
                         ),
                         trailing: GestureDetector(
                           onTap: () =>
-                              onEditTap(dates[index].studyTimes[studyIndex]),
+                              onEditTap(studySessionsOnDate[studyIndex]),
                           child: const Icon(
                             FluentIcons.edit_12_regular,
                             size: 20,

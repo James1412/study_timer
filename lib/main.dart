@@ -15,7 +15,7 @@ void main() {
           create: (context) => DarkModelViewModel(),
         ),
         ChangeNotifierProvider(
-          create: (context) => StudyDateViewModel(),
+          create: (context) => StudySessionViewModel(),
         ),
       ],
       child: const StudyTimerApp(),

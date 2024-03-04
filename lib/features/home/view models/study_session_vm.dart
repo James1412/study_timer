@@ -57,18 +57,16 @@ class StudySessionViewModel extends ChangeNotifier {
   }
 
   void editStudySession(StudySessionModel studySessionModel) {
-    IconData? subjectIcon = studySessions
-            .lastWhere((element) =>
+    studySessionModel.icon = studySessions
+            .firstWhere((element) =>
                 element.subjectName == studySessionModel.subjectName)
             .icon ??
         studySessions
-            .firstWhere((element) =>
+            .lastWhere((element) =>
                 element.subjectName == studySessionModel.subjectName)
             .icon;
-
     for (StudySessionModel element in studySessions) {
       if (element.uniqueKey == studySessionModel.uniqueKey) {
-        element.icon = subjectIcon;
         element.subjectName = studySessionModel.subjectName;
       }
     }
@@ -84,17 +82,12 @@ class StudySessionViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addStudySession(StudySessionModel studySessionModel) {
-    IconData? subjectIcon = studySessions
-            .lastWhere((element) =>
-                element.subjectName == studySessionModel.subjectName)
-            .icon ??
-        studySessions
-            .firstWhere((element) =>
-                element.subjectName == studySessionModel.subjectName)
-            .icon;
-    studySessionModel.icon = subjectIcon;
-    studySessions.add(studySessionModel);
+  void addStudySession(StudySessionModel studyTimeModel) {
+    studyTimeModel.icon = studySessions
+        .firstWhere(
+            (element) => element.subjectName == studyTimeModel.subjectName)
+        .icon;
+    studySessions.add(studyTimeModel);
     studyDates = studySessions.map((e) => e.date).toSet().toList();
     notifyListeners();
   }

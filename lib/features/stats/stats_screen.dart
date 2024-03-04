@@ -1,15 +1,14 @@
 import 'package:duration/duration.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
-import 'package:study_timer/features/home/view%20models/study_session_vm.dart';
+import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/settings/settings_screen.dart';
+import 'package:study_timer/features/stats/widgets/stat_box.dart';
 import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
 
@@ -21,7 +20,7 @@ class StatsScreen extends StatefulWidget {
 }
 
 class _StatsScreenState extends State<StatsScreen> {
-  Map<DateTime, int> getDatasets(BuildContext context) {
+  Map<DateTime, int> getDatasets() {
     Map<DateTime, int> datasets = {};
     for (DateTime date in context.watch<StudySessionViewModel>().studyDates) {
       int duration = 0;
@@ -134,12 +133,30 @@ class _StatsScreenState extends State<StatsScreen> {
                   textColor: isDarkMode(context) ? Colors.white : Colors.black,
                   flexible: true,
                   colorMode: ColorMode.opacity,
-                  datasets: getDatasets(context),
+                  datasets: getDatasets(),
                 ),
               ],
             ),
           ),
           const Gap(50),
+          GridView.count(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            crossAxisCount: 2,
+            mainAxisSpacing: 16.0,
+            crossAxisSpacing: 16.0,
+            childAspectRatio: 1.2,
+            children: const [
+              StatBox(
+                'Average study time per day',
+                "3h 56m",
+              ),
+              StatBox(
+                'Average study time per day',
+                "3h 56m",
+              ),
+            ],
+          ),
         ],
       ),
     );

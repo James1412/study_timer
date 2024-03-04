@@ -244,8 +244,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 45,
                             height: 45,
                             decoration: BoxDecoration(
-                              color:
-                                  Colors.blueAccent.shade100.withOpacity(0.10),
+                              color: isDarkMode(context)
+                                  ? darkStatBoxColor
+                                  : lightStatBoxColor,
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Icon(

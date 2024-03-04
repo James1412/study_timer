@@ -11,7 +11,7 @@ import 'package:screen_brightness/screen_brightness.dart';
 import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
-import 'package:study_timer/features/settings/utils.dart';
+import 'package:study_timer/features/settings/view_models/auto_brightness_vm.dart';
 import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
 import 'package:study_timer/features/timer/utils.dart';
@@ -57,23 +57,23 @@ class _TimerScreenState extends State<TimerScreen> {
     });
     if (isPlaying) {
       startTimer();
-      try {
-        final currentBrightness = await ScreenBrightness().current;
-        await ScreenBrightness().setScreenBrightness(currentBrightness / 5);
-      } catch (e) {}
+      if (Provider.of<AutoBrightnessViewModel>(context, listen: false)
+          .isAutoBrightnessControl) {
+        try {
+          final currentBrightness = await ScreenBrightness().current;
+          await ScreenBrightness().setScreenBrightness(currentBrightness / 5);
+        } catch (e) {}
+      }
     } else {
       stopTimer();
-      try {
-        await ScreenBrightness().resetScreenBrightness();
-      } catch (e) {}
+      if (Provider.of<AutoBrightnessViewModel>(context, listen: false)
+          .isAutoBrightnessControl) {
+        try {
+          await ScreenBrightness().resetScreenBrightness();
+        } catch (e) {}
+      }
     }
-
-    if (!mounted) return;
-    if (isAutoBrightnessControl(context)) {
-      WakelockPlus.toggle(enable: isPlaying);
-    } else {
-      WakelockPlus.disable();
-    }
+    WakelockPlus.toggle(enable: isPlaying);
   }
 
   void onClearTap() {

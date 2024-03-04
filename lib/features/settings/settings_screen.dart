@@ -2,7 +2,6 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:study_timer/features/settings/utils.dart';
 import 'package:study_timer/features/settings/view_models/auto_brightness_vm.dart';
 import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
@@ -42,7 +41,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     .read<AutoBrightnessViewModel>()
                     .changeIsAutoBrightnessControl(val);
               },
-              value: isAutoBrightnessControl(context),
+              value: context
+                  .watch<AutoBrightnessViewModel>()
+                  .isAutoBrightnessControl,
             ),
           ),
         ],

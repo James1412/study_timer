@@ -33,9 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  late TextEditingController _editController;
   void onEditTap(StudySessionModel studyTimeModel) async {
-    _editController = TextEditingController(text: studyTimeModel.subjectName);
+    TextEditingController editController =
+        TextEditingController(text: studyTimeModel.subjectName);
     await showCupertinoDialog(
       context: context,
       builder: (context) {
@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 spellCheckService: DefaultSpellCheckService(),
               ),
               placeholder: "Subject name",
-              controller: _editController,
+              controller: editController,
               cursorColor: blueButtonColor,
               style: TextStyle(
                   color: isDarkMode(context) ? Colors.white : Colors.black),
@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   HapticFeedback.lightImpact();
                 }
                 StudySessionModel newStudyModel = studyTimeModel
-                  ..subjectName = _editController.text;
+                  ..subjectName = editController.text;
                 context
                     .read<StudySessionViewModel>()
                     .editStudySession(newStudyModel);
@@ -119,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
-    _editController.dispose();
+    editController.dispose();
   }
 
   Duration getTotalDuration(List studyDates, index) {
@@ -165,6 +165,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     List<DateTime> studyDates =
         context.watch<StudySessionViewModel>().studyDates;
+    if (pageController.hasClients) {
+      pageController.jumpToPage(
+        context.watch<StudySessionViewModel>().studyDates.length - 1,
+      );
+    }
     return studyDates.isEmpty
         ? const Center(
             child: Text("No study session yet..."),
@@ -220,11 +225,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                                 color: getPercentChange(dateIndex, studyDates) <
                                         0
-                                    ? Colors.red
+                                    ? redButtonColor
                                     : getPercentChange(dateIndex, studyDates) ==
                                             0
                                         ? Colors.grey
-                                        : Colors.green,
+                                        : blueButtonColor,
                                 fontWeight: FontWeight.w500),
                           ),
                         ],

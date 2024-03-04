@@ -86,6 +86,7 @@ class StudySessionViewModel extends ChangeNotifier {
 
   void addStudySession(StudySessionModel studyTimeModel) {
     studySessions.add(studyTimeModel);
+    studyDates = studySessions.map((e) => e.date).toSet().toList();
     notifyListeners();
   }
 }

@@ -28,7 +28,6 @@ class _TimerScreenState extends State<TimerScreen> {
   bool isPlaying = false;
   Duration duration = const Duration();
   Timer? timer;
-  TextEditingController? controller;
 
   void startTimer() {
     timer = Timer.periodic(const Duration(seconds: 1), (_) => addTime());
@@ -103,7 +102,7 @@ class _TimerScreenState extends State<TimerScreen> {
   }
 
   void onDoneTap() async {
-    controller = TextEditingController();
+    TextEditingController controller = TextEditingController();
     await showCupertinoDialog(
       context: context,
       builder: (context) => CupertinoAlertDialog(
@@ -140,7 +139,7 @@ class _TimerScreenState extends State<TimerScreen> {
               }
               StudySessionModel studyTimeModel = StudySessionModel(
                   icon: null,
-                  subjectName: controller!.text,
+                  subjectName: controller.text,
                   date: onlyDate(DateTime.now()),
                   duration: duration,
                   uniqueKey: UniqueKey().hashCode);
@@ -160,7 +159,7 @@ class _TimerScreenState extends State<TimerScreen> {
         ],
       ),
     );
-    controller!.dispose();
+    controller.dispose();
   }
 
   @override

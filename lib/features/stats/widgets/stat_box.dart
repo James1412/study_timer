@@ -6,7 +6,9 @@ import 'package:study_timer/features/themes/dark%20mode/utils.dart';
 class StatBox extends StatelessWidget {
   final String title;
   final String stat;
-  const StatBox(this.title, this.stat, {super.key});
+  final String? change;
+  const StatBox(
+      {required this.title, required this.stat, this.change, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +31,29 @@ class StatBox extends StatelessWidget {
             ),
           ),
           const Gap(10),
-          Text(
-            stat,
-            style: const TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 23,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                stat,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 23,
+                ),
+              ),
+              if (change != null) ...[
+                const Gap(5),
+                Text(
+                  change!,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: change!.contains('-')
+                        ? redButtonColor
+                        : blueButtonColor,
+                  ),
+                ),
+              ],
+            ],
           ),
         ],
       ),

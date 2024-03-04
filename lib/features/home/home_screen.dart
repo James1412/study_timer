@@ -137,10 +137,11 @@ class _HomeScreenState extends State<HomeScreen> {
     if (dateIndex <= 0) {
       return 100;
     } else {
-      return ((getTotalDuration(studyDates, dateIndex).inMinutes -
-              getTotalDuration(studyDates, dateIndex - 1).inMinutes) /
-          getTotalDuration(studyDates, dateIndex - 1).inMinutes *
-          100);
+      return double.parse(((getTotalDuration(studyDates, dateIndex).inMinutes -
+                  getTotalDuration(studyDates, dateIndex - 1).inMinutes) /
+              getTotalDuration(studyDates, dateIndex - 1).inMinutes *
+              100)
+          .toStringAsFixed(1));
     }
   }
 
@@ -216,16 +217,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           const Gap(5),
                           Text(
-                            "${getPercentChange(dateIndex, studyDates) > 0 ? "+" : ""}${getPercentChange(dateIndex, studyDates).toStringAsFixed(1)}%",
+                            "${getPercentChange(dateIndex, studyDates) > 0.0 ? "+" : ""}${getPercentChange(dateIndex, studyDates)}%",
                             style: TextStyle(
-                                color: getPercentChange(dateIndex, studyDates) <
-                                        0
-                                    ? redButtonColor
-                                    : getPercentChange(dateIndex, studyDates) ==
-                                            0
-                                        ? Colors.grey
-                                        : blueButtonColor,
-                                fontWeight: FontWeight.w500),
+                              color: getPercentChange(dateIndex, studyDates) <
+                                      0.0
+                                  ? redButtonColor
+                                  : getPercentChange(dateIndex, studyDates) ==
+                                          0.0
+                                      ? Colors.grey
+                                      : blueButtonColor,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ],
                       ),

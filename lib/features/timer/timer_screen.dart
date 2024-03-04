@@ -1,3 +1,5 @@
+// ignore_for_file: empty_catches
+
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +13,7 @@ import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view%20models/study_session_vm.dart';
 import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
+import 'package:study_timer/features/timer/utils.dart';
 import 'package:study_timer/features/timer/widgets/timer_widget.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -55,17 +58,14 @@ class _TimerScreenState extends State<TimerScreen> {
     if (isPlaying) {
       startTimer();
       try {
-        await ScreenBrightness().setScreenBrightness(0.2);
-      } catch (e) {
-        //print(e);
-      }
+        final currentBrightness = await ScreenBrightness().current;
+        await ScreenBrightness().setScreenBrightness(currentBrightness / 5);
+      } catch (e) {}
     } else {
       stopTimer();
       try {
         await ScreenBrightness().resetScreenBrightness();
-      } catch (e) {
-        //print(e);
-      }
+      } catch (e) {}
     }
     WakelockPlus.toggle(enable: isPlaying);
   }
@@ -111,6 +111,7 @@ class _TimerScreenState extends State<TimerScreen> {
         content: Padding(
           padding: const EdgeInsets.only(top: 10.0),
           child: CupertinoTextField(
+            clearButtonMode: OverlayVisibilityMode.editing,
             autofocus: true,
             spellCheckConfiguration: SpellCheckConfiguration(
               spellCheckService: DefaultSpellCheckService(),
@@ -138,6 +139,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 duration = const Duration(minutes: 1);
               }
               StudySessionModel studyTimeModel = StudySessionModel(
+                  icon: null,
                   subjectName: controller!.text,
                   dateTime: onlyDate(DateTime.now()),
                   duration: duration,
@@ -160,8 +162,6 @@ class _TimerScreenState extends State<TimerScreen> {
     );
     controller!.dispose();
   }
-
-  String twoDigits(int n) => n.toString().padLeft(2, '0');
 
   @override
   Widget build(BuildContext context) {

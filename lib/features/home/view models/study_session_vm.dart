@@ -13,24 +13,28 @@ class StudySessionViewModel extends ChangeNotifier {
       dateTime: onlyDate(DateTime.now()).subtract(const Duration(days: 2)),
       duration: const Duration(hours: 2),
       uniqueKey: firstKey,
+      icon: null,
     ),
     StudySessionModel(
       subjectName: 'math',
       dateTime: onlyDate(DateTime.now()).subtract(const Duration(days: 1)),
       duration: const Duration(hours: 2, minutes: 34, seconds: 29),
       uniqueKey: secondKey,
+      icon: null,
     ),
     StudySessionModel(
       subjectName: 'science',
       dateTime: onlyDate(DateTime.now()),
       duration: const Duration(hours: 1),
       uniqueKey: thirdKey,
+      icon: null,
     ),
     StudySessionModel(
       subjectName: 'science1',
       dateTime: onlyDate(DateTime.now()),
       duration: const Duration(hours: 1),
       uniqueKey: fourthKey,
+      icon: null,
     ),
   ];
 
@@ -44,18 +48,36 @@ class StudySessionViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void editStudySession(StudySessionModel studyTimeModel) {
-    studySessions.map((element) {
-      if (element.uniqueKey == studyTimeModel.uniqueKey) {
-        return element = studyTimeModel;
+  void editStudySession(StudySessionModel studySessionModel) {
+    IconData? subjectIcon = studySessions
+            .lastWhere((element) =>
+                element.subjectName == studySessionModel.subjectName)
+            .icon ??
+        studySessions
+            .firstWhere((element) =>
+                element.subjectName == studySessionModel.subjectName)
+            .icon;
+
+    for (StudySessionModel element in studySessions) {
+      if (element.uniqueKey == studySessionModel.uniqueKey) {
+        element.icon = subjectIcon;
+        element.subjectName = studySessionModel.subjectName;
       }
-    });
+    }
+    notifyListeners();
+  }
+
+  void editSubjectIcon(StudySessionModel studySessionModel) {
+    for (StudySessionModel element in studySessions) {
+      if (element.subjectName == studySessionModel.subjectName) {
+        element.icon = studySessionModel.icon;
+      }
+    }
     notifyListeners();
   }
 
   void addStudySession(StudySessionModel studyTimeModel) {
     studySessions.add(studyTimeModel);
     notifyListeners();
-    return;
   }
 }

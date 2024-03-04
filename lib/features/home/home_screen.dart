@@ -5,6 +5,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -43,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
           content: Padding(
             padding: const EdgeInsets.only(top: 10.0),
             child: CupertinoTextField(
+              clearButtonMode: OverlayVisibilityMode.editing,
               autofocus: true,
               spellCheckConfiguration: SpellCheckConfiguration(
                 spellCheckService: DefaultSpellCheckService(),
@@ -131,12 +133,38 @@ class _HomeScreenState extends State<HomeScreen> {
     return totalDuration;
   }
 
+  double percentChange(int dateIndex, List studyDates) {
+    if (dateIndex <= 0) {
+      return 100;
+    } else {
+      return ((getTotalDuration(studyDates, dateIndex).inMinutes -
+              getTotalDuration(studyDates, dateIndex - 1).inMinutes) /
+          getTotalDuration(studyDates, dateIndex - 1).inMinutes *
+          100);
+    }
+  }
+
+  _pickIcon(StudySessionModel studySessionModel) async {
+    IconData? icon = await showIconPicker(
+      showTooltips: true,
+      iconPackModes: [
+        IconPack.outlinedMaterial,
+        IconPack.cupertino,
+        IconPack.fontAwesomeIcons,
+        IconPack.lineAwesomeIcons,
+      ],
+      context,
+      adaptiveDialog: true,
+    );
+    if (icon == null || !mounted) return;
+    studySessionModel = studySessionModel..icon = icon;
+    context.read<StudySessionViewModel>().editSubjectIcon(studySessionModel);
+  }
+
   @override
   Widget build(BuildContext context) {
     List<DateTime> studyDates =
         context.watch<StudySessionViewModel>().studyDates;
-    List<StudySessionModel> studySessions =
-        context.watch<StudySessionViewModel>().studySessions;
     return studyDates.isEmpty
         ? const Center(
             child: Text("No study session yet..."),
@@ -147,10 +175,13 @@ class _HomeScreenState extends State<HomeScreen> {
             controller: pageController,
             physics: const PageScrollPhysics(),
             itemBuilder: (context, dateIndex) {
-              List<StudySessionModel> studySessionsOnDate = studySessions
+              List<StudySessionModel> studySessionsOnDate = context
+                  .watch<StudySessionViewModel>()
+                  .studySessions
                   .where((element) =>
                       isSameDate(element.dateTime, studyDates[dateIndex]))
                   .toList();
+
               return Scaffold(
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(
@@ -171,6 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
+                          const Gap(5),
                           Text(
                             prettyDuration(
                               getTotalDuration(studyDates, dateIndex),
@@ -183,6 +215,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontWeight: FontWeight.w700,
                             ),
                           ),
+                          const Gap(5),
+                          Text(
+                            "${percentChange(dateIndex, studyDates) > 0 ? "+" : ""}${percentChange(dateIndex, studyDates).toStringAsFixed(1)}%",
+                            style: TextStyle(
+                                color: percentChange(dateIndex, studyDates) < 0
+                                    ? Colors.red
+                                    : percentChange(dateIndex, studyDates) == 0
+                                        ? Colors.grey
+                                        : Colors.green,
+                                fontWeight: FontWeight.w500),
+                          ),
                         ],
                       ),
                     ),
@@ -192,14 +235,23 @@ class _HomeScreenState extends State<HomeScreen> {
                       shrinkWrap: true,
                       itemCount: studySessionsOnDate.length,
                       itemBuilder: (context, sessionIndex) => ListTile(
-                        leading: Container(
-                          width: 45,
-                          height: 45,
-                          decoration: BoxDecoration(
-                            color: Colors.blueAccent.shade100.withOpacity(0.10),
-                            borderRadius: BorderRadius.circular(5),
+                        leading: GestureDetector(
+                          onTap: () {
+                            _pickIcon(studySessionsOnDate[sessionIndex]);
+                          },
+                          child: Container(
+                            width: 45,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color:
+                                  Colors.blueAccent.shade100.withOpacity(0.10),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Icon(
+                              studySessionsOnDate[sessionIndex].icon ??
+                                  CupertinoIcons.book,
+                            ),
                           ),
-                          child: const Icon(FluentIcons.book_open_16_regular),
                         ),
                         title: Text(
                           prettyDuration(
@@ -218,9 +270,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         trailing: GestureDetector(
                           onTap: () =>
                               onEditTap(studySessionsOnDate[sessionIndex]),
-                          child: const Icon(
-                            FluentIcons.edit_12_regular,
-                            size: 20,
+                          child: Container(
+                            color: Colors.transparent,
+                            height: double.maxFinite,
+                            width: 70,
+                            alignment: Alignment.centerRight,
+                            child: const Icon(
+                              FluentIcons.edit_12_regular,
+                              size: 20,
+                            ),
                           ),
                         ),
                       ),

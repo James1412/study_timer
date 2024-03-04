@@ -44,6 +44,7 @@ dependencies:
   screen_brightness: ^1.0.0
   fl_chart: ^0.66.2
   duration: ^3.0.13
+  flutter_iconpicker: ^3.3.3
 
 flutter_launcher_icons:
   android: "launcher_icon"

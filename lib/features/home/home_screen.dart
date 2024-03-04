@@ -8,9 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:study_timer/features/home/models/study_time_model.dart';
+import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
-import 'package:study_timer/features/home/view%20models/study_date_vm.dart';
+import 'package:study_timer/features/home/view%20models/study_session_vm.dart';
 import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
 
@@ -146,17 +146,16 @@ class _HomeScreenState extends State<HomeScreen> {
             scrollDirection: Axis.horizontal,
             controller: pageController,
             physics: const PageScrollPhysics(),
-            itemBuilder: (context, index) {
+            itemBuilder: (context, dateIndex) {
               List<StudySessionModel> studySessionsOnDate = studySessions
                   .where((element) =>
-                      isSameDate(element.dateTime, studyDates[index]))
+                      isSameDate(element.dateTime, studyDates[dateIndex]))
                   .toList();
-
               return Scaffold(
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(
                   title: Text(
-                      "${DateFormat.yMEd().format(studyDates[index])}${isToday(studyDates[index]) ? " (Today)" : ''}"),
+                      "${DateFormat.yMEd().format(studyDates[dateIndex])}${isToday(studyDates[dateIndex]) ? " (Today)" : ''}"),
                 ),
                 body: ListView(
                   children: [
@@ -174,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           Text(
                             prettyDuration(
-                              getTotalDuration(studyDates, index),
+                              getTotalDuration(studyDates, dateIndex),
                               tersity: DurationTersity.minute,
                               abbreviated: true,
                               conjunction: ' ',
@@ -184,7 +183,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const Gap(15),
                         ],
                       ),
                     ),
@@ -193,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: studySessionsOnDate.length,
-                      itemBuilder: (context, studyIndex) => ListTile(
+                      itemBuilder: (context, sessionIndex) => ListTile(
                         leading: Container(
                           width: 45,
                           height: 45,
@@ -206,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         title: Text(
                           prettyDuration(
                             locale: const EnglishDurationLocale(),
-                            studySessionsOnDate[studyIndex].duration,
+                            studySessionsOnDate[sessionIndex].duration,
                             tersity: DurationTersity.minute,
                             upperTersity: DurationTersity.hour,
                             abbreviated: true,
@@ -215,11 +213,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: const TextStyle(fontWeight: FontWeight.w700),
                         ),
                         subtitle: Text(
-                          studySessionsOnDate[studyIndex].subjectName,
+                          studySessionsOnDate[sessionIndex].subjectName,
                         ),
                         trailing: GestureDetector(
                           onTap: () =>
-                              onEditTap(studySessionsOnDate[studyIndex]),
+                              onEditTap(studySessionsOnDate[sessionIndex]),
                           child: const Icon(
                             FluentIcons.edit_12_regular,
                             size: 20,

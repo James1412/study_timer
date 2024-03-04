@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:study_timer/features/home/models/study_time_model.dart';
+import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 
 class StudySessionViewModel extends ChangeNotifier {

@@ -83,10 +83,14 @@ class StudySessionViewModel extends ChangeNotifier {
   }
 
   void addStudySession(StudySessionModel studyTimeModel) {
-    studyTimeModel.icon = studySessions
-        .firstWhere(
-            (element) => element.subjectName == studyTimeModel.subjectName)
-        .icon;
+    if (studySessions
+        .where((element) => element.subjectName == studyTimeModel.subjectName)
+        .isNotEmpty) {
+      studyTimeModel.icon = studySessions
+          .firstWhere(
+              (element) => element.subjectName == studyTimeModel.subjectName)
+          .icon;
+    }
     studySessions.add(studyTimeModel);
     studyDates = studySessions.map((e) => e.date).toSet().toList();
     notifyListeners();

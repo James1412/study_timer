@@ -7,44 +7,52 @@ class StudySessionViewModel extends ChangeNotifier {
   int secondKey = UniqueKey().hashCode;
   int thirdKey = UniqueKey().hashCode;
   int fourthKey = UniqueKey().hashCode;
+  int fifthKey = UniqueKey().hashCode;
   late List<StudySessionModel> studySessions = [
     StudySessionModel(
       subjectName: 'history',
-      dateTime: onlyDate(DateTime.now()).subtract(const Duration(days: 2)),
-      duration: const Duration(hours: 2),
+      date: onlyDate(DateTime.now()).subtract(const Duration(days: 2)),
+      duration: const Duration(hours: 2, minutes: 20),
       uniqueKey: firstKey,
       icon: null,
     ),
     StudySessionModel(
       subjectName: 'math',
-      dateTime: onlyDate(DateTime.now()).subtract(const Duration(days: 1)),
+      date: onlyDate(DateTime.now()).subtract(const Duration(days: 1)),
       duration: const Duration(hours: 2, minutes: 34, seconds: 29),
       uniqueKey: secondKey,
       icon: null,
     ),
     StudySessionModel(
       subjectName: 'science',
-      dateTime: onlyDate(DateTime.now()),
-      duration: const Duration(hours: 1),
+      date: onlyDate(DateTime.now()),
+      duration: const Duration(hours: 1, minutes: 53),
       uniqueKey: thirdKey,
       icon: null,
     ),
     StudySessionModel(
       subjectName: 'science1',
-      dateTime: onlyDate(DateTime.now()),
+      date: onlyDate(DateTime.now()),
       duration: const Duration(hours: 1),
       uniqueKey: fourthKey,
       icon: null,
     ),
-  ];
+    StudySessionModel(
+      subjectName: 'science2',
+      date: onlyDate(DateTime.now()).subtract(const Duration(days: 3)),
+      duration: const Duration(hours: 1),
+      uniqueKey: fifthKey,
+      icon: null,
+    ),
+  ]..sort((a, b) => a.date.compareTo(b.date));
 
   late List<DateTime> studyDates =
-      studySessions.map((e) => e.dateTime).toSet().toList();
+      studySessions.map((e) => e.date).toSet().toList();
 
   void deleteStudySession(StudySessionModel studyTimeModel) {
     studySessions.removeWhere(
         (element) => element.uniqueKey == studyTimeModel.uniqueKey);
-    studyDates = studySessions.map((e) => e.dateTime).toSet().toList();
+    studyDates = studySessions.map((e) => e.date).toSet().toList();
     notifyListeners();
   }
 

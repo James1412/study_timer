@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class StudySessionModel {
   String subjectName;
   Duration duration;
-  DateTime dateTime;
+  DateTime date;
   int uniqueKey;
   IconData? icon;
 
   StudySessionModel({
     required this.subjectName,
-    required this.dateTime,
+    required this.date,
     required this.duration,
     required this.uniqueKey,
     required this.icon,

@@ -126,14 +126,14 @@ class _HomeScreenState extends State<HomeScreen> {
     Duration totalDuration = const Duration();
     for (StudySessionModel studyTimeModel
         in context.watch<StudySessionViewModel>().studySessions) {
-      if (isSameDate(studyDates[index], studyTimeModel.dateTime)) {
+      if (isSameDate(studyDates[index], studyTimeModel.date)) {
         totalDuration += studyTimeModel.duration;
       }
     }
     return totalDuration;
   }
 
-  double percentChange(int dateIndex, List studyDates) {
+  double getPercentChange(int dateIndex, List studyDates) {
     if (dateIndex <= 0) {
       return 100;
     } else {
@@ -144,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  _pickIcon(StudySessionModel studySessionModel) async {
+  Future<void> onPickIcon(StudySessionModel studySessionModel) async {
     IconData? icon = await showIconPicker(
       showTooltips: true,
       iconPackModes: [
@@ -179,9 +179,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   .watch<StudySessionViewModel>()
                   .studySessions
                   .where((element) =>
-                      isSameDate(element.dateTime, studyDates[dateIndex]))
+                      isSameDate(element.date, studyDates[dateIndex]))
                   .toList();
-
               return Scaffold(
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(
@@ -211,17 +210,19 @@ class _HomeScreenState extends State<HomeScreen> {
                               conjunction: ' ',
                             ),
                             style: const TextStyle(
-                              fontSize: 23,
+                              fontSize: 25,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                           const Gap(5),
                           Text(
-                            "${percentChange(dateIndex, studyDates) > 0 ? "+" : ""}${percentChange(dateIndex, studyDates).toStringAsFixed(1)}%",
+                            "${getPercentChange(dateIndex, studyDates) > 0 ? "+" : ""}${getPercentChange(dateIndex, studyDates).toStringAsFixed(1)}%",
                             style: TextStyle(
-                                color: percentChange(dateIndex, studyDates) < 0
+                                color: getPercentChange(dateIndex, studyDates) <
+                                        0
                                     ? Colors.red
-                                    : percentChange(dateIndex, studyDates) == 0
+                                    : getPercentChange(dateIndex, studyDates) ==
+                                            0
                                         ? Colors.grey
                                         : Colors.green,
                                 fontWeight: FontWeight.w500),
@@ -237,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, sessionIndex) => ListTile(
                         leading: GestureDetector(
                           onTap: () {
-                            _pickIcon(studySessionsOnDate[sessionIndex]);
+                            onPickIcon(studySessionsOnDate[sessionIndex]);
                           },
                           child: Container(
                             width: 45,

@@ -141,7 +141,7 @@ class _TimerScreenState extends State<TimerScreen> {
               StudySessionModel studyTimeModel = StudySessionModel(
                   icon: null,
                   subjectName: controller!.text,
-                  dateTime: onlyDate(DateTime.now()),
+                  date: onlyDate(DateTime.now()),
                   duration: duration,
                   uniqueKey: UniqueKey().hashCode);
               context

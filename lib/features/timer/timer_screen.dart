@@ -10,7 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
-import 'package:study_timer/features/home/view%20models/study_session_vm.dart';
+import 'package:study_timer/features/home/view_models/study_session_vm.dart';
+import 'package:study_timer/features/settings/utils.dart';
 import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
 import 'package:study_timer/features/timer/utils.dart';
@@ -66,7 +67,13 @@ class _TimerScreenState extends State<TimerScreen> {
         await ScreenBrightness().resetScreenBrightness();
       } catch (e) {}
     }
-    WakelockPlus.toggle(enable: isPlaying);
+
+    if (!mounted) return;
+    if (isAutoBrightnessControl(context)) {
+      WakelockPlus.toggle(enable: isPlaying);
+    } else {
+      WakelockPlus.disable();
+    }
   }
 
   void onClearTap() {

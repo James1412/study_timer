@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
-import 'package:study_timer/features/home/view%20models/study_session_vm.dart';
+import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
 

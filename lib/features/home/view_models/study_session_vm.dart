@@ -68,6 +68,7 @@ class StudySessionViewModel extends ChangeNotifier {
     for (StudySessionModel element in studySessions) {
       if (element.uniqueKey == studySessionModel.uniqueKey) {
         element.subjectName = studySessionModel.subjectName;
+        element.icon = studySessionModel.icon;
       }
     }
     notifyListeners();

@@ -19,7 +19,7 @@ class StudySessionViewModel extends ChangeNotifier {
     StudySessionModel(
       subjectName: 'math',
       date: onlyDate(DateTime.now()).subtract(const Duration(days: 1)),
-      duration: const Duration(hours: 2, minutes: 34, seconds: 29),
+      duration: const Duration(hours: 5, minutes: 34, seconds: 29),
       uniqueKey: secondKey,
       icon: null,
     ),
@@ -33,7 +33,7 @@ class StudySessionViewModel extends ChangeNotifier {
     StudySessionModel(
       subjectName: 'science1',
       date: onlyDate(DateTime.now()),
-      duration: const Duration(hours: 1),
+      duration: const Duration(hours: 3),
       uniqueKey: fourthKey,
       icon: null,
     ),

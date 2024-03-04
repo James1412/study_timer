@@ -165,11 +165,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     List<DateTime> studyDates =
         context.watch<StudySessionViewModel>().studyDates;
-    if (pageController.hasClients) {
-      pageController.jumpToPage(
-        context.watch<StudySessionViewModel>().studyDates.length - 1,
-      );
-    }
     return studyDates.isEmpty
         ? const Center(
             child: Text("No study session yet..."),

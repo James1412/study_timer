@@ -37,10 +37,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             offstage: index != 0,
             child: const TimerScreen(),
           ),
-          Offstage(
-            offstage: index != 1,
-            child: const HomeScreen(),
-          ),
+          if (index == 1) const HomeScreen(),
           Offstage(
             offstage: index != 2,
             child: const StatsScreen(),

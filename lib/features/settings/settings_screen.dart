@@ -46,6 +46,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   .isAutoBrightnessControl,
             ),
           ),
+          //TODO: remove ads by watching rewarded ads or pay $1.99
+          ListTile(
+            leading: const Icon(FluentIcons.gift_24_regular),
+            title: const Text("Remove Ads"),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(FluentIcons.info_20_regular),
+            title: const Text("About"),
+            onTap: () {
+              showAboutDialog(context: context);
+            },
+          ),
         ],
       ),
     );

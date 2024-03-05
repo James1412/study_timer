@@ -8,5 +8,5 @@ Color lightNavigationBar = Colors.white;
 Color blueButtonColor = const Color(0xff607AFC);
 Color redButtonColor = const Color(0xffEC6227);
 
-Color lightStatBoxColor = const Color(0xFFE5E7EC);
-Color darkStatBoxColor = const Color(0xff3C404A);
+Color lightStatBoxColor = blueButtonColor.withOpacity(0.05);
+Color darkStatBoxColor = const Color(0xFF2D3342);

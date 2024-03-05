@@ -1,6 +1,5 @@
 import 'package:duration/duration.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +7,8 @@ import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/settings/settings_screen.dart';
 import 'package:study_timer/features/stats/heat_map_screen.dart';
-import 'package:study_timer/features/stats/widgets/stat_box.dart';
+import 'package:study_timer/features/stats/widgets/grid_stat_box.dart';
+import 'package:study_timer/features/stats/widgets/subject_stat_box.dart';
 import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/utils.dart';
 
@@ -113,44 +113,45 @@ class _StatsScreenState extends State<StatsScreen> {
                   ),
                   const Gap(10),
                   Expanded(
-                      child: Container(
-                    color: blueButtonColor.withOpacity(0.05),
-                  )),
+                    child: Container(
+                      color: blueButtonColor.withOpacity(0.05),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
-          const Gap(50),
+          const Gap(20),
           GridView.count(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             crossAxisCount: 2,
             mainAxisSpacing: 16.0,
             crossAxisSpacing: 16.0,
-            childAspectRatio: 1.2,
+            childAspectRatio: 1.3,
             children: const [
-              StatBox(
+              GridStatBox(
                 title: 'Average study time per day',
-                stat: "3h 56m",
-                change: null,
+                stat: "3.8h",
               ),
-              StatBox(
-                title: 'Total study time this week',
-                stat: "34h",
-                change: '+15%',
-              ),
-              StatBox(
+              GridStatBox(
                 title: 'Study sessions this week',
                 stat: "34",
                 change: '-20%',
               ),
-              StatBox(
+              GridStatBox(
+                title: 'Top subject this week',
+                stat: "Science",
+              ),
+              GridStatBox(
                 title: 'Longest study streak',
                 stat: "7 day",
-                change: null,
+                change: "+10%",
               ),
             ],
           ),
+          const Gap(16),
+          const SubjectStatBox(),
         ],
       ),
     );

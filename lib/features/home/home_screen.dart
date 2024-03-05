@@ -160,6 +160,20 @@ class _HomeScreenState extends State<HomeScreen> {
     if (icon == null || !mounted) return;
     studySessionModel = studySessionModel..icon = icon;
     context.read<StudySessionViewModel>().editSubjectIcon(studySessionModel);
+
+    // TODO: save codePoint, fontFamily, and fontPackage in Hive
+    showDialog(
+      context: context,
+      builder: (context) => Center(
+        child: Icon(
+          IconData(
+            icon.codePoint,
+            fontFamily: icon.fontFamily,
+            fontPackage: icon.fontPackage,
+          ),
+        ),
+      ),
+    );
   }
 
   @override

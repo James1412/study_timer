@@ -1,17 +1,19 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:study_timer/features/themes/colors.dart';
-import 'package:study_timer/features/themes/dark%20mode/utils.dart';
+import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
 
-class SubjectStatBox extends StatelessWidget {
+class SubjectStatBox extends ConsumerWidget {
   const SubjectStatBox({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       width: double.maxFinite,
       decoration: BoxDecoration(
-        color: isDarkMode(context) ? darkStatBoxColor : lightStatBoxColor,
+        color:
+            ref.watch(darkmodeProvider) ? darkStatBoxColor : lightStatBoxColor,
         borderRadius: BorderRadius.circular(16),
       ),
       padding: const EdgeInsets.all(16.0),

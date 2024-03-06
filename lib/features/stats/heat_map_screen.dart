@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/themes/colors.dart';
-import 'package:study_timer/features/themes/dark%20mode/utils.dart';
+import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
 
-class HeatMapScreen extends StatefulWidget {
+class HeatMapScreen extends ConsumerStatefulWidget {
   const HeatMapScreen({super.key});
 
   @override
-  State<HeatMapScreen> createState() => _HeatMapScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HeatMapScreenState();
 }
 
-class _HeatMapScreenState extends State<HeatMapScreen> {
+class _HeatMapScreenState extends ConsumerState<HeatMapScreen> {
   Map<DateTime, int> getDatasets() {
     Map<DateTime, int> datasets = {};
-    for (DateTime date in context.watch<StudySessionViewModel>().studyDates) {
+    final dates = ref.watch(studyDatesProvider);
+    final studySessions = ref.watch(studySessionProvider);
+    for (DateTime date in dates) {
       int duration = 0;
-      for (StudySessionModel studySessionModel
-          in context.watch<StudySessionViewModel>().studySessions) {
+      for (StudySessionModel studySessionModel in studySessions) {
         if (isSameDate(date, studySessionModel.date)) {
           duration += studySessionModel.duration.inMinutes;
         }
@@ -45,9 +46,11 @@ class _HeatMapScreenState extends State<HeatMapScreen> {
               colorsets: {
                 1: blueButtonColor,
               },
-              defaultColor:
-                  isDarkMode(context) ? darkNavigationBar : lightNavigationBar,
-              textColor: isDarkMode(context) ? Colors.white : Colors.black,
+              defaultColor: ref.watch(darkmodeProvider)
+                  ? darkNavigationBar
+                  : lightNavigationBar,
+              textColor:
+                  ref.watch(darkmodeProvider) ? Colors.white : Colors.black,
               flexible: true,
               colorMode: ColorMode.opacity,
               datasets: getDatasets(),

@@ -1,8 +1,8 @@
 import 'package:duration/duration.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:provider/provider.dart';
 import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/settings/settings_screen.dart';
@@ -10,22 +10,20 @@ import 'package:study_timer/features/stats/heat_map_screen.dart';
 import 'package:study_timer/features/stats/widgets/grid_stat_box.dart';
 import 'package:study_timer/features/stats/widgets/subject_stat_box.dart';
 import 'package:study_timer/features/themes/colors.dart';
-import 'package:study_timer/features/themes/dark%20mode/utils.dart';
+import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
 
-class StatsScreen extends StatefulWidget {
+class StatsScreen extends ConsumerStatefulWidget {
   const StatsScreen({super.key});
 
   @override
-  State<StatsScreen> createState() => _StatsScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _StatsScreenState();
 }
 
-class _StatsScreenState extends State<StatsScreen> {
+class _StatsScreenState extends ConsumerState<StatsScreen> {
   @override
   Widget build(BuildContext context) {
-    StudySessionViewModel viewModel =
-        Provider.of<StudySessionViewModel>(context);
-
-    List<StudySessionModel> sessionsPastSevenDays = viewModel.studySessions
+    List<StudySessionModel> sessionsPastSevenDays = ref
+        .watch(studySessionProvider)
         .where(
           (session) => session.date.isAfter(DateTime.now().subtract(
             const Duration(days: 7),
@@ -62,7 +60,7 @@ class _StatsScreenState extends State<StatsScreen> {
             height: 400,
             decoration: BoxDecoration(
               border: Border.all(
-                  color: isDarkMode(context)
+                  color: ref.watch(darkmodeProvider)
                       ? darkStatBoxColor
                       : lightStatBoxColor),
               borderRadius: BorderRadius.circular(10),

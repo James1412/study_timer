@@ -6,26 +6,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/themes/colors.dart';
-import 'package:study_timer/features/themes/dark%20mode/utils.dart';
+import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  late PageController pageController = PageController(
-      initialPage:
-          context.watch<StudySessionViewModel>().studyDates.length - 1);
+class HomeScreenState extends ConsumerState<HomeScreen> {
+  late PageController pageController =
+      PageController(initialPage: ref.watch(studyDatesProvider).length - 1);
 
   @override
   void dispose() {
@@ -53,7 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
               controller: editController,
               cursorColor: blueButtonColor,
               style: TextStyle(
-                  color: isDarkMode(context) ? Colors.white : Colors.black),
+                  color: ref.watch(darkmodeProvider)
+                      ? Colors.white
+                      : Colors.black),
             ),
           ),
           actions: [
@@ -80,8 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         isDestructiveAction: true,
                         child: const Text("Delete"),
                         onPressed: () {
-                          context
-                              .read<StudySessionViewModel>()
+                          ref
+                              .read(studySessionProvider.notifier)
                               .deleteStudySession(studyTimeModel);
                           Navigator.pop(context);
                           Navigator.pop(context);
@@ -109,8 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
                 StudySessionModel newStudyModel = studyTimeModel
                   ..subjectName = editController.text;
-                context
-                    .read<StudySessionViewModel>()
+                ref
+                    .read(studySessionProvider.notifier)
                     .editStudySession(newStudyModel);
                 Navigator.pop(context);
               },
@@ -124,8 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Duration getTotalDuration(List studyDates, index) {
     Duration totalDuration = const Duration();
-    for (StudySessionModel studyTimeModel
-        in context.watch<StudySessionViewModel>().studySessions) {
+    for (StudySessionModel studyTimeModel in ref.watch(studySessionProvider)) {
       if (isSameDate(studyDates[index], studyTimeModel.date)) {
         totalDuration += studyTimeModel.duration;
       }
@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     if (icon == null || !mounted) return;
     studySessionModel = studySessionModel..icon = icon;
-    context.read<StudySessionViewModel>().editSubjectIcon(studySessionModel);
+    ref.read(studySessionProvider.notifier).editSubjectIcon(studySessionModel);
 
     // TODO: save codePoint, fontFamily, and fontPackage in Hive
     showDialog(
@@ -178,8 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<DateTime> studyDates =
-        context.watch<StudySessionViewModel>().studyDates;
+    List<DateTime> studyDates = ref.watch(studyDatesProvider);
     return studyDates.isEmpty
         ? const Center(
             child: Text("No study session yet..."),
@@ -190,9 +189,8 @@ class _HomeScreenState extends State<HomeScreen> {
             controller: pageController,
             physics: const PageScrollPhysics(),
             itemBuilder: (context, dateIndex) {
-              List<StudySessionModel> studySessionsOnDate = context
-                  .watch<StudySessionViewModel>()
-                  .studySessions
+              List<StudySessionModel> studySessionsOnDate = ref
+                  .watch(studySessionProvider)
                   .where((element) =>
                       isSameDate(element.date, studyDates[dateIndex]))
                   .toList();
@@ -260,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 45,
                             height: 45,
                             decoration: BoxDecoration(
-                              color: isDarkMode(context)
+                              color: ref.watch(darkmodeProvider)
                                   ? darkStatBoxColor
                                   : lightStatBoxColor,
                               borderRadius: BorderRadius.circular(5),

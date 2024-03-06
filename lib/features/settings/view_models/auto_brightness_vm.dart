@@ -1,10 +1,17 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AutoBrightnessViewModel extends ChangeNotifier {
-  bool isAutoBrightnessControl = true;
-
+class AutoBrightnessViewModel extends Notifier<bool> {
   void changeIsAutoBrightnessControl(bool val) {
-    isAutoBrightnessControl = val;
-    notifyListeners();
+    state = val;
+  }
+
+  @override
+  bool build() {
+    return true;
   }
 }
+
+final autoBrightnessControlProvider =
+    NotifierProvider<AutoBrightnessViewModel, bool>(
+  () => AutoBrightnessViewModel(),
+);

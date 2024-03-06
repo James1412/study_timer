@@ -5,27 +5,27 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/settings/view_models/auto_brightness_vm.dart';
 import 'package:study_timer/features/themes/colors.dart';
-import 'package:study_timer/features/themes/dark%20mode/utils.dart';
+import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
 import 'package:study_timer/features/timer/utils.dart';
 import 'package:study_timer/features/timer/widgets/timer_widget.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
-class TimerScreen extends StatefulWidget {
+class TimerScreen extends ConsumerStatefulWidget {
   const TimerScreen({super.key});
 
   @override
-  State<TimerScreen> createState() => _TimerScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _TimerScreenState();
 }
 
-class _TimerScreenState extends State<TimerScreen> {
+class _TimerScreenState extends ConsumerState<TimerScreen> {
   bool isPlaying = false;
   Duration duration = const Duration();
   Timer? timer;
@@ -57,8 +57,7 @@ class _TimerScreenState extends State<TimerScreen> {
     });
     if (isPlaying) {
       startTimer();
-      if (Provider.of<AutoBrightnessViewModel>(context, listen: false)
-          .isAutoBrightnessControl) {
+      if (ref.watch(autoBrightnessControlProvider)) {
         try {
           final currentBrightness = await ScreenBrightness().current;
           await ScreenBrightness().setScreenBrightness(currentBrightness / 5);
@@ -66,8 +65,7 @@ class _TimerScreenState extends State<TimerScreen> {
       }
     } else {
       stopTimer();
-      if (Provider.of<AutoBrightnessViewModel>(context, listen: false)
-          .isAutoBrightnessControl) {
+      if (ref.watch(autoBrightnessControlProvider)) {
         try {
           await ScreenBrightness().resetScreenBrightness();
         } catch (e) {}
@@ -126,7 +124,8 @@ class _TimerScreenState extends State<TimerScreen> {
             controller: controller,
             cursorColor: blueButtonColor,
             style: TextStyle(
-                color: isDarkMode(context) ? Colors.white : Colors.black),
+                color:
+                    ref.watch(darkmodeProvider) ? Colors.white : Colors.black),
           ),
         ),
         actions: [
@@ -150,8 +149,8 @@ class _TimerScreenState extends State<TimerScreen> {
                   date: onlyDate(DateTime.now()),
                   duration: duration,
                   uniqueKey: UniqueKey().hashCode);
-              context
-                  .read<StudySessionViewModel>()
+              ref
+                  .read(studySessionProvider.notifier)
                   .addStudySession(studyTimeModel);
               if (timer != null) {
                 duration = const Duration();

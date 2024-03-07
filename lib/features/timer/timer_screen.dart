@@ -11,8 +11,9 @@ import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/settings/view_models/auto_brightness_vm.dart';
-import 'package:study_timer/features/themes/colors.dart';
-import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
+import 'package:study_timer/features/themes/utils/colors.dart';
+import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
+import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
 import 'package:study_timer/features/timer/utils.dart';
 import 'package:study_timer/features/timer/widgets/timer_widget.dart';
 import 'package:study_timer/utils/ios_haptic.dart';
@@ -91,7 +92,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
         actions: [
           CupertinoDialogAction(
             isDefaultAction: true,
-            textStyle: TextStyle(color: blueButtonColor),
+            textStyle: TextStyle(color: ref.watch(mainColorProvider)),
             child: const Text("Cancel"),
             onPressed: () => Navigator.pop(context),
           ),
@@ -125,7 +126,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
             ),
             placeholder: "Subject name",
             controller: controller,
-            cursorColor: blueButtonColor,
+            cursorColor: ref.watch(mainColorProvider),
             style: TextStyle(
                 color:
                     ref.watch(darkmodeProvider) ? Colors.white : Colors.black),
@@ -139,7 +140,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
           ),
           CupertinoDialogAction(
             isDefaultAction: true,
-            textStyle: TextStyle(color: blueButtonColor),
+            textStyle: TextStyle(color: ref.watch(mainColorProvider)),
             child: const Text("Done"),
             onPressed: () {
               iosLightFeedback();
@@ -197,7 +198,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
               child: Text(
                 "Done",
                 style: TextStyle(
-                  color: blueButtonColor,
+                  color: ref.watch(mainColorProvider),
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -221,7 +222,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                   width: double.maxFinite,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: blueButtonColor,
+                    color: ref.watch(mainColorProvider),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(

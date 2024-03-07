@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
-import 'package:study_timer/features/themes/colors.dart';
-import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
+import 'package:study_timer/features/themes/utils/colors.dart';
+import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
 
 class HeatMapScreen extends ConsumerStatefulWidget {
   const HeatMapScreen({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:study_timer/features/themes/colors.dart';
-import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
+import 'package:study_timer/features/themes/utils/colors.dart';
+import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
 
 class GridStatBox extends ConsumerWidget {
   final String title;
@@ -19,8 +19,7 @@ class GridStatBox extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
-        color:
-            ref.watch(darkmodeProvider) ? darkStatBoxColor : lightStatBoxColor,
+        color: getStatsBoxColor(ref),
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.all(16),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:study_timer/features/themes/colors.dart';
+import 'package:study_timer/features/themes/utils/colors.dart';
 
 ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,

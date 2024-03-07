@@ -11,8 +11,8 @@ import 'package:intl/intl.dart';
 import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
-import 'package:study_timer/features/themes/colors.dart';
-import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
+import 'package:study_timer/features/themes/utils/colors.dart';
+import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
 import 'package:study_timer/utils/ios_haptic.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -256,9 +256,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                             width: 45,
                             height: 45,
                             decoration: BoxDecoration(
-                              color: ref.watch(darkmodeProvider)
-                                  ? darkStatBoxColor
-                                  : lightStatBoxColor,
+                              color: getStatsBoxColor(ref),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Icon(

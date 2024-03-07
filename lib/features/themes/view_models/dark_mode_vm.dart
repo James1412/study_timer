@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:study_timer/features/themes/dark%20mode/dark_mode_repo.dart';
+import 'package:study_timer/features/themes/repos/dark_mode_repo.dart';
 
 class DarkModelViewModel extends Notifier<bool> {
   final DarkModeRepository _repository = DarkModeRepository();

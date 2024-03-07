@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:study_timer/features/themes/colors.dart';
-import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
+import 'package:study_timer/features/themes/utils/colors.dart';
 
 class SubjectStatBox extends ConsumerWidget {
   const SubjectStatBox({super.key});
@@ -12,8 +11,7 @@ class SubjectStatBox extends ConsumerWidget {
     return Container(
       width: double.maxFinite,
       decoration: BoxDecoration(
-        color:
-            ref.watch(darkmodeProvider) ? darkStatBoxColor : lightStatBoxColor,
+        color: getStatsBoxColor(ref),
         borderRadius: BorderRadius.circular(16),
       ),
       padding: const EdgeInsets.all(16.0),

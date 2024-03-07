@@ -9,8 +9,8 @@ import 'package:study_timer/features/settings/settings_screen.dart';
 import 'package:study_timer/features/stats/heat_map_screen.dart';
 import 'package:study_timer/features/stats/widgets/grid_stat_box.dart';
 import 'package:study_timer/features/stats/widgets/subject_stat_box.dart';
-import 'package:study_timer/features/themes/colors.dart';
-import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
+import 'package:study_timer/features/themes/utils/colors.dart';
+import 'package:study_timer/utils/ios_haptic.dart';
 
 class StatsScreen extends ConsumerStatefulWidget {
   const StatsScreen({super.key});
@@ -39,12 +39,15 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
         title: const Text("Statistics"),
         actions: [
           GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SettingsScreen(),
-              ),
-            ),
+            onTap: () {
+              iosLightFeedback();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
+                ),
+              );
+            },
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 15.0),
               child: Icon(FluentIcons.settings_28_regular),
@@ -59,10 +62,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
             width: double.maxFinite,
             height: 400,
             decoration: BoxDecoration(
-              border: Border.all(
-                  color: ref.watch(darkmodeProvider)
-                      ? darkStatBoxColor
-                      : lightStatBoxColor),
+              border: Border.all(color: getStatsBoxColor(ref)),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(

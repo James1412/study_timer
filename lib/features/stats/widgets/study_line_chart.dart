@@ -9,6 +9,7 @@ import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/stats/heat_map_screen.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
 
 class StudyLineChart extends ConsumerStatefulWidget {
   const StudyLineChart({super.key});
@@ -43,8 +44,25 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
     return studyTimeOfTheWeek;
   }
 
+  double maxDurationOfTheWeek() {
+    List<StudySessionModel> sessions = studySessionsOfTheWeek();
+    sessions.sort((a, b) => a.duration.compareTo(b.duration));
+    final maxHour = sessions.last.duration.inMinutes / 60;
+    return maxHour;
+  }
+
   @override
   Widget build(BuildContext context) {
+    BarData weeklyBarData = BarData(
+      monAmount: 5,
+      tueAmount: 4,
+      wedAmount: 2,
+      thuAmount: 1,
+      friAmount: 4.3,
+      satAmount: 4.5,
+      sunAmount: 5.5,
+    );
+    weeklyBarData.initializeBarData();
     return Container(
       width: double.maxFinite,
       height: 400,
@@ -101,27 +119,42 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
             ),
           ),
           Expanded(
-            child: LineChart(
-              LineChartData(
-                minX: 0,
-                maxX: 6,
+            child: BarChart(
+              BarChartData(
+                maxY: maxDurationOfTheWeek(),
                 minY: 0,
-                maxY: 10,
-                borderData: FlBorderData(
-                  show: false,
-                ),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: [
-                      const FlSpot(0, 3),
-                      const FlSpot(1, 5),
-                      const FlSpot(3, 1.5),
-                      const FlSpot(4, 5.5),
-                      const FlSpot(5, 3),
-                      const FlSpot(6, 2.5),
-                    ],
+                borderData: FlBorderData(show: false),
+                gridData: const FlGridData(show: false),
+                titlesData: const FlTitlesData(
+                  show: true,
+                  topTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  leftTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles:
+                      AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      reservedSize: 38,
+                      showTitles: true,
+                      getTitlesWidget: getBottomTitles,
+                    ),
                   ),
-                ],
+                ),
+                barGroups: weeklyBarData.barData
+                    .map(
+                      (data) => BarChartGroupData(
+                        x: data.x,
+                        barRods: [
+                          BarChartRodData(
+                              toY: data.y,
+                              width: 25,
+                              borderRadius: BorderRadius.circular(4),
+                              color: ref.watch(mainColorProvider)),
+                        ],
+                      ),
+                    )
+                    .toList(),
               ),
             ),
           ),
@@ -129,4 +162,67 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
       ),
     );
   }
+}
+
+class IndividualBar {
+  final int x;
+  final double y;
+
+  IndividualBar({required this.x, required this.y});
+}
+
+class BarData {
+  final double monAmount;
+  final double tueAmount;
+  final double wedAmount;
+  final double thuAmount;
+  final double friAmount;
+  final double satAmount;
+  final double sunAmount;
+
+  BarData({
+    required this.monAmount,
+    required this.tueAmount,
+    required this.wedAmount,
+    required this.thuAmount,
+    required this.friAmount,
+    required this.satAmount,
+    required this.sunAmount,
+  });
+  List<IndividualBar> barData = [];
+
+  void initializeBarData() {
+    barData = [
+      IndividualBar(x: 0, y: monAmount),
+      IndividualBar(x: 1, y: tueAmount),
+      IndividualBar(x: 2, y: wedAmount),
+      IndividualBar(x: 3, y: thuAmount),
+      IndividualBar(x: 4, y: friAmount),
+      IndividualBar(x: 5, y: satAmount),
+      IndividualBar(x: 6, y: sunAmount),
+    ];
+  }
+}
+
+Widget getBottomTitles(double value, TitleMeta meta) {
+  const style = TextStyle(fontWeight: FontWeight.bold, fontSize: 14);
+
+  Widget text;
+  switch (value.toInt()) {
+    case 0:
+      text = const Text("M", style: style);
+    case 1:
+      text = const Text("T", style: style);
+    case 2:
+      text = const Text("W", style: style);
+    case 3:
+      text = const Text("T", style: style);
+    case 4:
+      text = const Text("F", style: style);
+    case 5:
+      text = const Text("S", style: style);
+    default:
+      text = const Text("S", style: style);
+  }
+  return SideTitleWidget(axisSide: meta.axisSide, child: text);
 }

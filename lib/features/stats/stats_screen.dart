@@ -53,7 +53,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16, bottom: 16),
         children: [
           Container(
             width: double.maxFinite,
@@ -65,58 +65,62 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                       : lightStatBoxColor),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HeatMapScreen()),
-                      );
-                    },
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Total Study Time",
-                          style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.w400),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HeatMapScreen()),
+                          );
+                        },
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Total Study Time",
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w400),
+                            ),
+                            Icon(FluentIcons.calendar_16_regular),
+                          ],
                         ),
-                        Icon(FluentIcons.calendar_16_regular),
-                      ],
-                    ),
+                      ),
+                      const Gap(5),
+                      Text(
+                        prettyDuration(
+                          totalStudyTimePastSeven,
+                          tersity: DurationTersity.minute,
+                          upperTersity: DurationTersity.hour,
+                        ),
+                        style: const TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.w700),
+                      ),
+                      const Gap(5),
+                      const Opacity(
+                        opacity: 0.7,
+                        child: Text(
+                          "Past 7 days",
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      const Gap(10),
+                    ],
                   ),
-                  const Gap(5),
-                  Text(
-                    prettyDuration(
-                      totalStudyTimePastSeven,
-                      tersity: DurationTersity.minute,
-                      upperTersity: DurationTersity.hour,
-                    ),
-                    style: const TextStyle(
-                        fontSize: 25, fontWeight: FontWeight.w700),
+                ),
+                Expanded(
+                  child: Container(
+                    color: blueButtonColor.withOpacity(0.05),
                   ),
-                  const Gap(5),
-                  const Opacity(
-                    opacity: 0.7,
-                    child: Text(
-                      "Past 7 days",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                  ),
-                  const Gap(10),
-                  Expanded(
-                    child: Container(
-                      color: blueButtonColor.withOpacity(0.05),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           const Gap(20),

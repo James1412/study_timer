@@ -1,7 +1,6 @@
 // ignore_for_file: empty_catches
 
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +15,7 @@ import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
 import 'package:study_timer/features/timer/utils.dart';
 import 'package:study_timer/features/timer/widgets/timer_widget.dart';
+import 'package:study_timer/utils/ios_haptic.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class TimerScreen extends ConsumerStatefulWidget {
@@ -48,10 +48,18 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
     });
   }
 
-  void togglePlay() async {
-    if (Platform.isIOS) {
-      HapticFeedback.heavyImpact();
+  void resetTimer() {
+    if (timer != null) {
+      duration = const Duration();
+      timer!.cancel();
+      timer = null;
+      isPlaying = false;
+      setState(() {});
     }
+  }
+
+  void togglePlay() async {
+    iosHeavyFeedback();
     setState(() {
       isPlaying = !isPlaying;
     });
@@ -91,13 +99,8 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
             isDestructiveAction: true,
             child: const Text("Clear"),
             onPressed: () {
-              if (timer != null) {
-                duration = const Duration();
-                timer!.cancel();
-                timer = null;
-                isPlaying = false;
-                setState(() {});
-              }
+              iosLightFeedback();
+              resetTimer();
               Navigator.pop(context);
             },
           ),
@@ -139,6 +142,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
             textStyle: TextStyle(color: blueButtonColor),
             child: const Text("Done"),
             onPressed: () {
+              iosLightFeedback();
               duration = roundSeconds(duration);
               StudySessionModel newStudySession = StudySessionModel(
                 icon: null,
@@ -150,13 +154,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
               ref
                   .read(studySessionProvider.notifier)
                   .addStudySession(newStudySession);
-              if (timer != null) {
-                duration = const Duration();
-                timer!.cancel();
-                timer = null;
-                isPlaying = false;
-                setState(() {});
-              }
+              resetTimer();
               Navigator.pop(context);
             },
           ),

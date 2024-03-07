@@ -1,13 +1,11 @@
-import 'dart:io';
-
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:study_timer/features/home/home_screen.dart';
 import 'package:study_timer/features/navigation/widgets/navigation_button.dart';
 import 'package:study_timer/features/stats/stats_screen.dart';
 import 'package:study_timer/features/timer/timer_screen.dart';
+import 'package:study_timer/utils/ios_haptic.dart';
 
 class MainNavigationScreen extends ConsumerStatefulWidget {
   const MainNavigationScreen({super.key});
@@ -21,9 +19,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
   int index = 0;
 
   void onScreenChange(int newIndex) {
-    if (Platform.isIOS) {
-      HapticFeedback.lightImpact();
-    }
+    iosLightFeedback();
     setState(() {
       index = newIndex;
     });

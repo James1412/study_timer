@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:duration/duration.dart';
 import 'package:duration/locale.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
@@ -14,6 +13,7 @@ import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/themes/colors.dart';
 import 'package:study_timer/features/themes/dark%20mode/dark_mode_vm.dart';
+import 'package:study_timer/utils/ios_haptic.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -105,9 +105,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               textStyle: TextStyle(color: blueButtonColor),
               child: const Text("Done"),
               onPressed: () {
-                if (Platform.isIOS) {
-                  HapticFeedback.lightImpact();
-                }
+                iosLightFeedback();
                 StudySessionModel newStudyModel = studyTimeModel
                   ..subjectName = editController.text;
                 ref

@@ -36,6 +36,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   void onEditTap(StudySessionModel studyTimeModel) async {
     TextEditingController editController =
         TextEditingController(text: studyTimeModel.subjectName);
+    iosLightFeedback();
     await showCupertinoDialog(
       context: context,
       builder: (context) {
@@ -63,6 +64,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               isDestructiveAction: true,
               child: const Text("Delete"),
               onPressed: () {
+                iosLightFeedback();
                 showCupertinoDialog(
                   context: context,
                   builder: (context) => CupertinoAlertDialog(
@@ -86,6 +88,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                           ref
                               .read(studySessionProvider.notifier)
                               .deleteStudySession(studyTimeModel);
+                          iosLightFeedback();
                           Navigator.pop(context);
                           Navigator.pop(context);
                         },

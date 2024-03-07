@@ -176,79 +176,87 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
     final seconds = twoDigits(duration.inSeconds.remainder(60));
     final hours = twoDigits(duration.inHours);
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text("Study Timer"),
-        leading: !isPlaying && timer != null
-            ? CupertinoButton(
-                padding: const EdgeInsets.only(left: 10.0),
-                onPressed: onClearTap,
-                child: const Text(
-                  "Clear",
+    return GestureDetector(
+      onTap: () async {
+        await ScreenBrightness().resetScreenBrightness();
+        final currentBrightness = await ScreenBrightness().current;
+        await Future.delayed(const Duration(seconds: 1));
+        await ScreenBrightness().setScreenBrightness(currentBrightness / 5);
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text("Study Timer"),
+          leading: !isPlaying && timer != null
+              ? CupertinoButton(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  onPressed: onClearTap,
+                  child: const Text(
+                    "Clear",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              : null,
+          actions: [
+            if (!isPlaying && timer != null)
+              CupertinoButton(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                onPressed: onDoneTap,
+                child: Text(
+                  "Done",
                   style: TextStyle(
-                    color: Colors.red,
+                    color: ref.watch(mainColorProvider),
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              )
-            : null,
-        actions: [
-          if (!isPlaying && timer != null)
-            CupertinoButton(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              onPressed: onDoneTap,
-              child: Text(
-                "Done",
-                style: TextStyle(
-                  color: ref.watch(mainColorProvider),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
               ),
-            ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TimerWidget(hours: hours, minutes: minutes, seconds: seconds),
-            const Gap(50),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: togglePlay,
-                child: Container(
-                  width: double.maxFinite,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: ref.watch(mainColorProvider),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Text(
-                      isPlaying
-                          ? "Stop"
-                          : timer == null
-                              ? "Start"
-                              : "Resume",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TimerWidget(hours: hours, minutes: minutes, seconds: seconds),
+              const Gap(50),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: togglePlay,
+                  child: Container(
+                    width: double.maxFinite,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: ref.watch(mainColorProvider),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        isPlaying
+                            ? "Stop"
+                            : timer == null
+                                ? "Start"
+                                : "Resume",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

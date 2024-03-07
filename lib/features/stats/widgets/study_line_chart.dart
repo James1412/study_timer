@@ -11,6 +11,7 @@ import 'package:study_timer/features/stats/heat_map_screen.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
+import 'package:study_timer/utils/ios_haptic.dart';
 
 class StudyLineChart extends ConsumerStatefulWidget {
   const StudyLineChart({super.key});
@@ -56,7 +57,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
     if (sessions.isNotEmpty) {
       maxHour = sessions.last.duration.inMinutes / 60;
     }
-    return maxHour;
+    return double.parse(maxHour.toStringAsFixed(1));
   }
 
   List<IndividualBar> barData() {
@@ -147,7 +148,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
           Expanded(
             child: BarChart(
               BarChartData(
-                maxY: maxDurationOfTheWeek() + 1,
+                maxY: maxDurationOfTheWeek() + 1.3,
                 minY: 0,
                 borderData: FlBorderData(show: false),
                 gridData: const FlGridData(show: false),
@@ -190,6 +191,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
               Expanded(
                 child: GestureDetector(
                     onTap: () {
+                      iosLightFeedback();
                       weekDate = weekDate.subtract(const Duration(days: 7));
                       setState(() {});
                     },
@@ -203,6 +205,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
+                    iosLightFeedback();
                     if (!isInTheWeekOf(DateTime.now())) {
                       weekDate = weekDate.add(const Duration(days: 7));
                     }

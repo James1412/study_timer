@@ -139,19 +139,17 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
             textStyle: TextStyle(color: blueButtonColor),
             child: const Text("Done"),
             onPressed: () {
-              if (duration < const Duration(minutes: 1) &&
-                  duration > const Duration(minutes: 0)) {
-                duration = const Duration(minutes: 1);
-              }
-              StudySessionModel studyTimeModel = StudySessionModel(
-                  icon: null,
-                  subjectName: controller.text,
-                  date: onlyDate(DateTime.now()),
-                  duration: duration,
-                  uniqueKey: UniqueKey().hashCode);
+              duration = roundSeconds(duration);
+              StudySessionModel newStudySession = StudySessionModel(
+                icon: null,
+                subjectName: controller.text,
+                date: onlyDate(DateTime.now()),
+                duration: duration,
+                uniqueKey: UniqueKey().hashCode,
+              );
               ref
                   .read(studySessionProvider.notifier)
-                  .addStudySession(studyTimeModel);
+                  .addStudySession(newStudySession);
               if (timer != null) {
                 duration = const Duration();
                 timer!.cancel();

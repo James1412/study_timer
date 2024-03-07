@@ -100,7 +100,7 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
       StudySessionModel(
         subjectName: 'science2',
         date: DateTime(2024, 3, 10),
-        duration: const Duration(hours: 10),
+        duration: const Duration(hours: 0, minutes: 30),
         uniqueKey: 1,
         icon: null,
       ),

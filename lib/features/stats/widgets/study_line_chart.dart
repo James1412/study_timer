@@ -3,6 +3,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
@@ -19,23 +20,27 @@ class StudyLineChart extends ConsumerStatefulWidget {
 }
 
 class _StudyLineChartState extends ConsumerState<StudyLineChart> {
-  List<StudySessionModel> studySessionsOfTheWeek() {
-    List<StudySessionModel> studySessions = ref.watch(studySessionProvider);
-    DateTime today = onlyDate(DateTime.now());
+  bool isInTheWeekOf(DateTime date) {
+    date = onlyDate(date);
     DateTime firstDateOfTheWeek =
-        today.subtract(Duration(days: today.weekday - 1));
-    DateTime lastDateOfTheWeek =
-        today.add(Duration(days: DateTime.daysPerWeek - today.weekday));
-    return studySessions
-        .where((element) =>
-            (element.date.isAfter(firstDateOfTheWeek) ||
-                element.date.isAtSameMomentAs(firstDateOfTheWeek)) &&
-            (element.date.isBefore(lastDateOfTheWeek) ||
-                element.date.isAtSameMomentAs(lastDateOfTheWeek)))
-        .toList();
+        onlyDate(date.subtract(Duration(days: weekDate.weekday - 1)));
+    DateTime lastDateOfTheWeek = onlyDate(
+        date.add(Duration(days: DateTime.daysPerWeek - weekDate.weekday)));
+    if ((weekDate.isAfter(firstDateOfTheWeek) ||
+                weekDate.isAtSameMomentAs(firstDateOfTheWeek)) &&
+            weekDate.isBefore(lastDateOfTheWeek) ||
+        weekDate.isAtSameMomentAs(lastDateOfTheWeek)) {
+      return true;
+    }
+    return false;
   }
 
-  Duration getWeeklyStudyTime() {
+  List<StudySessionModel> studySessionsOfTheWeek() {
+    List<StudySessionModel> studySessions = ref.watch(studySessionProvider);
+    return studySessions.where((element) => isInTheWeekOf(weekDate)).toList();
+  }
+
+  Duration getWeeklyTotalStudyTime() {
     final thisWeek = studySessionsOfTheWeek();
     Duration studyTimeOfTheWeek = Duration.zero;
     for (StudySessionModel element in thisWeek) {
@@ -47,22 +52,37 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
   double maxDurationOfTheWeek() {
     List<StudySessionModel> sessions = studySessionsOfTheWeek();
     sessions.sort((a, b) => a.duration.compareTo(b.duration));
-    final maxHour = sessions.last.duration.inMinutes / 60;
+    double maxHour = 0;
+    if (sessions.isNotEmpty) {
+      maxHour = sessions.last.duration.inMinutes / 60;
+    }
     return maxHour;
   }
 
+  List<IndividualBar> barData() {
+    List<IndividualBar> data = [];
+    final studySessions = studySessionsOfTheWeek();
+    DateTime firstDateOfTheWeek =
+        weekDate.subtract(Duration(days: weekDate.weekday - 1));
+    for (int i = 0; i < 7; i++) {
+      DateTime currentDate = firstDateOfTheWeek.add(Duration(days: i));
+      double totalStudyTime = 0;
+
+      for (StudySessionModel session in studySessions) {
+        if (onlyDate(session.date) == currentDate) {
+          totalStudyTime += session.duration.inMinutes.toDouble();
+        }
+      }
+      data.add(IndividualBar(
+          x: i, y: double.parse((totalStudyTime / 60).toStringAsFixed(1))));
+    }
+    return data;
+  }
+
+  DateTime weekDate = onlyDate(DateTime.now());
+
   @override
   Widget build(BuildContext context) {
-    BarData weeklyBarData = BarData(
-      monAmount: 5,
-      tueAmount: 4,
-      wedAmount: 2,
-      thuAmount: 1,
-      friAmount: 4.3,
-      satAmount: 4.5,
-      sunAmount: 5.5,
-    );
-    weeklyBarData.initializeBarData();
     return Container(
       width: double.maxFinite,
       height: 400,
@@ -99,7 +119,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                 ),
                 Text(
                   prettyDuration(
-                    getWeeklyStudyTime(),
+                    getWeeklyTotalStudyTime(),
                     tersity: DurationTersity.minute,
                     upperTersity: DurationTersity.hour,
                   ),
@@ -107,11 +127,17 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                       fontSize: 25, fontWeight: FontWeight.w700),
                 ),
                 const Gap(2),
-                const Opacity(
+                Opacity(
                   opacity: 0.7,
                   child: Text(
-                    "This week",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                    isInTheWeekOf(DateTime.now())
+                        ? "This week"
+                        : isInTheWeekOf(DateTime.now()
+                                .subtract(const Duration(days: 7)))
+                            ? "Last week"
+                            : "Week of ${DateFormat.yMMMMd().format(weekDate)}",
+                    style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.w400),
                   ),
                 ),
                 const Gap(10),
@@ -121,7 +147,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
           Expanded(
             child: BarChart(
               BarChartData(
-                maxY: maxDurationOfTheWeek(),
+                maxY: maxDurationOfTheWeek() + 1,
                 minY: 0,
                 borderData: FlBorderData(show: false),
                 gridData: const FlGridData(show: false),
@@ -141,7 +167,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                     ),
                   ),
                 ),
-                barGroups: weeklyBarData.barData
+                barGroups: barData()
                     .map(
                       (data) => BarChartGroupData(
                         x: data.x,
@@ -158,6 +184,38 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
               ),
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Expanded(
+                child: GestureDetector(
+                    onTap: () {
+                      weekDate = weekDate.subtract(const Duration(days: 7));
+                      setState(() {});
+                    },
+                    child: const Icon(FluentIcons.chevron_left_12_filled)),
+              ),
+              SizedBox(
+                width: 180,
+                child:
+                    Center(child: Text(DateFormat.yMMMMd().format(weekDate))),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    if (!isInTheWeekOf(DateTime.now())) {
+                      weekDate = weekDate.add(const Duration(days: 7));
+                    }
+                    setState(() {});
+                  },
+                  child: Opacity(
+                      opacity: isInTheWeekOf(DateTime.now()) ? 0.5 : 1,
+                      child: const Icon(FluentIcons.chevron_right_12_filled)),
+                ),
+              ),
+            ],
+          ),
+          const Gap(10),
         ],
       ),
     );
@@ -169,39 +227,6 @@ class IndividualBar {
   final double y;
 
   IndividualBar({required this.x, required this.y});
-}
-
-class BarData {
-  final double monAmount;
-  final double tueAmount;
-  final double wedAmount;
-  final double thuAmount;
-  final double friAmount;
-  final double satAmount;
-  final double sunAmount;
-
-  BarData({
-    required this.monAmount,
-    required this.tueAmount,
-    required this.wedAmount,
-    required this.thuAmount,
-    required this.friAmount,
-    required this.satAmount,
-    required this.sunAmount,
-  });
-  List<IndividualBar> barData = [];
-
-  void initializeBarData() {
-    barData = [
-      IndividualBar(x: 0, y: monAmount),
-      IndividualBar(x: 1, y: tueAmount),
-      IndividualBar(x: 2, y: wedAmount),
-      IndividualBar(x: 3, y: thuAmount),
-      IndividualBar(x: 4, y: friAmount),
-      IndividualBar(x: 5, y: satAmount),
-      IndividualBar(x: 6, y: sunAmount),
-    ];
-  }
 }
 
 Widget getBottomTitles(double value, TitleMeta meta) {

@@ -54,9 +54,7 @@ class GridStatBox extends ConsumerWidget {
                     change!,
                     style: TextStyle(
                       fontSize: 13,
-                      color: change!.contains('-')
-                          ? redButtonColor
-                          : blueButtonColor,
+                      color: change!.contains('-') ? Colors.red : Colors.green,
                     ),
                   ),
                 ],

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:study_timer/features/settings/view_models/auto_brightness_vm.dart';
 import 'package:study_timer/features/themes/models/main_color_model.dart';
+import 'package:study_timer/features/themes/utils/colors.dart';
 import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
 import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
 import 'package:study_timer/utils/ios_haptic.dart';
@@ -50,6 +51,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 value: ref.watch(autoBrightnessControlProvider),
               ),
             ),
+            ListTile(
+              leading: const Icon(FluentIcons.color_16_regular),
+              title: const Text("Main Theme Color"),
+              trailing: GestureDetector(
+                onTap: () {
+                  Color mainColor = ref.watch(mainColorProvider);
+                  Map<Color, MainColors> colorMap = {
+                    blueColor: MainColors.red,
+                    redColor: MainColors.green,
+                    greenColor: MainColors.blue
+                  };
+                  MainColors nextColor = colorMap[mainColor]!;
+                  ref
+                      .read(mainColorProvider.notifier)
+                      .changeMainColor(nextColor);
+                },
+                child: CircleAvatar(
+                  radius: 13,
+                  backgroundColor: ref.watch(mainColorProvider),
+                ),
+              ),
+            ),
             //TODO: remove ads by watching rewarded ads or pay $1.99
             ListTile(
               leading: const Icon(FluentIcons.gift_24_regular),
@@ -60,34 +83,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               leading: const Icon(FluentIcons.gift_24_filled),
               title: const Text("Remove Ads Forever"),
               onTap: () {},
-            ),
-            //TODO: Main Colors
-            ListTile(
-              leading: const Icon(FluentIcons.gift_24_filled),
-              title: const Text("Blue"),
-              onTap: () {
-                ref
-                    .read(mainColorProvider.notifier)
-                    .changeMainColor(MainColors.blue);
-              },
-            ),
-            ListTile(
-              leading: const Icon(FluentIcons.gift_24_filled),
-              title: const Text("Red"),
-              onTap: () {
-                ref
-                    .read(mainColorProvider.notifier)
-                    .changeMainColor(MainColors.red);
-              },
-            ),
-            ListTile(
-              leading: const Icon(FluentIcons.gift_24_filled),
-              title: const Text("Green"),
-              onTap: () {
-                ref
-                    .read(mainColorProvider.notifier)
-                    .changeMainColor(MainColors.green);
-              },
             ),
             ListTile(
               leading: const Icon(FluentIcons.info_20_regular),

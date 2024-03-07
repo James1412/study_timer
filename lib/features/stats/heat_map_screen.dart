@@ -6,6 +6,7 @@ import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
+import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
 
 class HeatMapScreen extends ConsumerStatefulWidget {
   const HeatMapScreen({super.key});
@@ -44,10 +45,10 @@ class _HeatMapScreenState extends ConsumerState<HeatMapScreen> {
           children: [
             HeatMapCalendar(
               colorsets: {
-                1: blueButtonColor,
+                1: ref.watch(mainColorProvider),
               },
               defaultColor: ref.watch(darkmodeProvider)
-                  ? darkNavigationBar
+                  ? darkNavigationBar(ref)
                   : lightNavigationBar,
               textColor:
                   ref.watch(darkmodeProvider) ? Colors.white : Colors.black,

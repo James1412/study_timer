@@ -10,6 +10,7 @@ import 'package:study_timer/features/stats/heat_map_screen.dart';
 import 'package:study_timer/features/stats/widgets/grid_stat_box.dart';
 import 'package:study_timer/features/stats/widgets/subject_stat_box.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
+import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
 import 'package:study_timer/utils/ios_haptic.dart';
 
 class StatsScreen extends ConsumerStatefulWidget {
@@ -117,7 +118,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                 ),
                 Expanded(
                   child: Container(
-                    color: blueButtonColor.withOpacity(0.05),
+                    color: ref.watch(mainColorProvider).withOpacity(0.05),
                   ),
                 ),
               ],

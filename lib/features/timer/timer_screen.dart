@@ -11,7 +11,6 @@ import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/settings/view_models/auto_brightness_vm.dart';
-import 'package:study_timer/features/themes/utils/colors.dart';
 import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
 import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
 import 'package:study_timer/features/timer/utils.dart';
@@ -180,10 +179,10 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
             ? CupertinoButton(
                 padding: const EdgeInsets.only(left: 10.0),
                 onPressed: onClearTap,
-                child: Text(
+                child: const Text(
                   "Clear",
                   style: TextStyle(
-                    color: redButtonColor,
+                    color: Colors.red,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),

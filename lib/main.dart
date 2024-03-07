@@ -32,8 +32,8 @@ class StudyTimerApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: lightTheme,
-      darkTheme: darkTheme,
+      theme: lightTheme(ref),
+      darkTheme: darkTheme(ref),
       themeMode: ref.watch(darkmodeProvider) ? ThemeMode.dark : ThemeMode.light,
       home: const MainNavigationScreen(),
     );

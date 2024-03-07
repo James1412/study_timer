@@ -13,6 +13,7 @@ import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
+import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
 import 'package:study_timer/utils/ios_haptic.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -50,7 +51,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               placeholder: "Subject name",
               controller: editController,
-              cursorColor: blueButtonColor,
+              cursorColor: ref.watch(mainColorProvider),
               style: TextStyle(
                   color: ref.watch(darkmodeProvider)
                       ? Colors.white
@@ -71,7 +72,8 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                     actions: [
                       CupertinoDialogAction(
                         isDefaultAction: true,
-                        textStyle: TextStyle(color: blueButtonColor),
+                        textStyle:
+                            TextStyle(color: ref.watch(mainColorProvider)),
                         child: const Text("Cancel"),
                         onPressed: () {
                           Navigator.pop(context);
@@ -102,7 +104,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             CupertinoDialogAction(
               isDefaultAction: true,
-              textStyle: TextStyle(color: blueButtonColor),
+              textStyle: TextStyle(color: ref.watch(mainColorProvider)),
               child: const Text("Done"),
               onPressed: () {
                 iosLightFeedback();
@@ -231,11 +233,11 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                             style: TextStyle(
                               color: getPercentChange(dateIndex, studyDates) <
                                       0.0
-                                  ? redButtonColor
+                                  ? Colors.red
                                   : getPercentChange(dateIndex, studyDates) ==
                                           0.0
                                       ? Colors.grey
-                                      : blueButtonColor,
+                                      : Colors.green,
                               fontWeight: FontWeight.w500,
                             ),
                           ),

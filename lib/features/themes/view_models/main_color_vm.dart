@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:study_timer/features/themes/models/main_color_model.dart';
 import 'package:study_timer/features/themes/repos/main_color_repo.dart';
@@ -25,3 +26,13 @@ class MainColorViewModel extends Notifier<Color> {
 final mainColorProvider = NotifierProvider<MainColorViewModel, Color>(
   () => MainColorViewModel(),
 );
+
+Color getMainColor(MainColors color) {
+  if (color == MainColors.blue) {
+    return blueColor;
+  } else if (color == MainColors.red) {
+    return redColor;
+  } else {
+    return greenColor;
+  }
+}

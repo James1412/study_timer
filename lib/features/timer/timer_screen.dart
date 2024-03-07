@@ -1,5 +1,3 @@
-// ignore_for_file: empty_catches
-
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -69,14 +67,22 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
         try {
           final currentBrightness = await ScreenBrightness().current;
           await ScreenBrightness().setScreenBrightness(currentBrightness / 5);
-        } catch (e) {}
+        } catch (e) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(e.toString())));
+        }
       }
     } else {
       stopTimer();
       if (ref.watch(autoBrightnessControlProvider)) {
         try {
           await ScreenBrightness().resetScreenBrightness();
-        } catch (e) {}
+        } catch (e) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(e.toString())));
+        }
       }
     }
     WakelockPlus.toggle(enable: isPlaying);

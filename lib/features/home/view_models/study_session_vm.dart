@@ -97,6 +97,13 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
         uniqueKey: fifthKey,
         icon: null,
       ),
+      StudySessionModel(
+        subjectName: 'science2',
+        date: DateTime(2024, 3, 10),
+        duration: const Duration(hours: 100),
+        uniqueKey: 1,
+        icon: null,
+      ),
     ]..sort((a, b) => a.date.compareTo(b.date));
     return studySessions;
   }

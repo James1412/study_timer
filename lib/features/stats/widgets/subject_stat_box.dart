@@ -52,7 +52,7 @@ Widget subjectRow(String subjectName) {
             Text(
               subjectName,
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
             ),

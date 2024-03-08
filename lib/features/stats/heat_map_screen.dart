@@ -23,7 +23,7 @@ class _HeatMapScreenState extends ConsumerState<HeatMapScreen> {
     for (DateTime date in dates) {
       int duration = 0;
       for (StudySessionModel studySessionModel in studySessions) {
-        if (isSameDate(date, studySessionModel.date)) {
+        if (areSameDate(date, studySessionModel.date)) {
           duration += studySessionModel.duration.inMinutes;
         }
       }

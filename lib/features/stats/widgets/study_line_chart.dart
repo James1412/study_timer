@@ -21,28 +21,48 @@ class StudyLineChart extends ConsumerStatefulWidget {
 }
 
 class _StudyLineChartState extends ConsumerState<StudyLineChart> {
-  bool isInTheWeek(DateTime date) {
+  bool isInTheWeek(DateTime date, [DateTime? specificWeekDate]) {
     date = onlyDate(date);
-    DateTime firstDateOfTheWeek =
-        onlyDate(weekDate.subtract(Duration(days: weekDate.weekday - 1)));
-    DateTime lastDateOfTheWeek = onlyDate(
-        weekDate.add(Duration(days: DateTime.daysPerWeek - weekDate.weekday)));
-    if ((date.isAfter(firstDateOfTheWeek) ||
-                date.isAtSameMomentAs(firstDateOfTheWeek)) &&
-            date.isBefore(lastDateOfTheWeek) ||
-        date.isAtSameMomentAs(lastDateOfTheWeek)) {
-      return true;
+    DateTime weekStart;
+    DateTime weekEnd;
+    if (specificWeekDate == null) {
+      weekStart =
+          onlyDate(weekDate.subtract(Duration(days: weekDate.weekday - 1)));
+      weekEnd = onlyDate(weekDate
+          .add(Duration(days: DateTime.daysPerWeek - weekDate.weekday)));
+    } else {
+      weekStart = onlyDate(specificWeekDate
+          .subtract(Duration(days: specificWeekDate.weekday - 1)));
+      weekEnd = onlyDate(specificWeekDate.add(
+          Duration(days: DateTime.daysPerWeek - specificWeekDate.weekday)));
     }
-    return false;
+
+    return ((date.isAfter(weekStart) || date.isAtSameMomentAs(weekStart)) &&
+            date.isBefore(weekEnd) ||
+        date.isAtSameMomentAs(weekEnd));
   }
 
-  List<StudySessionModel> studySessionsOfTheWeek() {
+  List<StudySessionModel> studySessionsOfTheWeek([DateTime? specificWeek]) {
     List<StudySessionModel> studySessions = ref.watch(studySessionProvider);
-    return studySessions.where((element) => isInTheWeek(element.date)).toList();
+    if (specificWeek == null) {
+      return studySessions
+          .where((element) => isInTheWeek(element.date))
+          .toList()
+        ..sort((a, b) => a.date.compareTo(b.date));
+    }
+    return studySessions
+        .where((element) => isInTheWeek(element.date, specificWeek))
+        .toList()
+      ..sort((a, b) => a.date.compareTo(b.date));
   }
 
-  Duration getWeeklyTotalStudyTime() {
-    final thisWeek = studySessionsOfTheWeek();
+  Duration getWeeklyTotalStudyTime([DateTime? specificWeek]) {
+    List<StudySessionModel> thisWeek;
+    if (specificWeek == null) {
+      thisWeek = studySessionsOfTheWeek();
+    } else {
+      thisWeek = studySessionsOfTheWeek(specificWeek);
+    }
     Duration studyTimeOfTheWeek = Duration.zero;
     for (StudySessionModel element in thisWeek) {
       studyTimeOfTheWeek += element.duration;
@@ -80,15 +100,24 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
     return data;
   }
 
-  bool isInSpecificWeek(DateTime date, DateTime week) {
-    DateTime weekStart = week.subtract(Duration(days: week.weekday - 1));
-    DateTime weekEnd =
-        weekStart.add(const Duration(days: DateTime.daysPerWeek - 1));
-
-    return date.isAfter(weekStart) && date.isBefore(weekEnd);
-  }
-
   DateTime weekDate = onlyDate(DateTime.now());
+
+  double compareToPreviousWeek() {
+    final currentWeekStudyTime = getWeeklyTotalStudyTime().inMinutes;
+    final prevWeekStudyTime =
+        getWeeklyTotalStudyTime(weekDate.subtract(const Duration(days: 7)))
+            .inMinutes;
+    double percentage = 0;
+    if (prevWeekStudyTime == 0.0 && currentWeekStudyTime == 0.0) {
+      percentage = 0.0;
+    } else if (prevWeekStudyTime == 0) {
+      percentage = 100.0;
+    } else {
+      percentage =
+          (currentWeekStudyTime - prevWeekStudyTime) / prevWeekStudyTime;
+    }
+    return double.parse(percentage.toStringAsFixed(1));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +155,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                     ],
                   ),
                 ),
+                // Total Duration
                 Text(
                   prettyDuration(
                     getWeeklyTotalStudyTime(),
@@ -135,6 +165,19 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                   style: const TextStyle(
                       fontSize: 25, fontWeight: FontWeight.w700),
                 ),
+                const Gap(5),
+                // Percentage Change
+                Text(
+                  compareToPreviousWeek() > 0
+                      ? "+${compareToPreviousWeek()}%"
+                      : "${compareToPreviousWeek()}%",
+                  style: TextStyle(
+                      color: compareToPreviousWeek() > 0
+                          ? Colors.green
+                          : compareToPreviousWeek() == 0
+                              ? Colors.grey
+                              : Colors.red),
+                ),
               ],
             ),
           ),
@@ -142,7 +185,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
           Expanded(
             child: BarChart(
               BarChartData(
-                maxY: maxDurationOfTheWeek() + 1.3,
+                maxY: maxDurationOfTheWeek() + maxDurationOfTheWeek() / 2.5,
                 minY: 0,
                 borderData: FlBorderData(show: false),
                 gridData: const FlGridData(show: false),
@@ -199,9 +242,9 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                 width: 180,
                 child: Center(
                     child: Text(
-                  isInSpecificWeek(weekDate, DateTime.now())
+                  isInTheWeek(weekDate, DateTime.now())
                       ? "This week"
-                      : isInSpecificWeek(weekDate,
+                      : isInTheWeek(weekDate,
                               DateTime.now().subtract(const Duration(days: 7)))
                           ? "Last week"
                           : "Week of ${DateFormat.yMd().format(weekDate)}",
@@ -221,7 +264,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                   child: Container(
                     color: Colors.transparent,
                     child: Opacity(
-                        opacity: isInTheWeek(DateTime.now()) ? 0.5 : 1,
+                        opacity: isInTheWeek(DateTime.now()) ? 0.3 : 1,
                         child: const Icon(FluentIcons.chevron_right_12_filled)),
                   ),
                 ),

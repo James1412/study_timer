@@ -129,7 +129,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   Duration getTotalDuration(List studyDates, index) {
     Duration totalDuration = const Duration();
     for (StudySessionModel studyTimeModel in ref.watch(studySessionProvider)) {
-      if (isSameDate(studyDates[index], studyTimeModel.date)) {
+      if (areSameDate(studyDates[index], studyTimeModel.date)) {
         totalDuration += studyTimeModel.duration;
       }
     }
@@ -195,7 +195,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               List<StudySessionModel> studySessionsOnDate = ref
                   .watch(studySessionProvider)
                   .where((element) =>
-                      isSameDate(element.date, studyDates[dateIndex]))
+                      areSameDate(element.date, studyDates[dateIndex]))
                   .toList();
               return Scaffold(
                 resizeToAvoidBottomInset: false,

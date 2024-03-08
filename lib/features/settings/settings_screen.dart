@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:study_timer/features/settings/view_models/auto_brightness_vm.dart';
+import 'package:study_timer/features/settings/view_models/show_percent_change_vm.dart';
 import 'package:study_timer/features/themes/models/main_color_model.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
@@ -49,6 +50,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       .changeIsAutoBrightnessControl(val);
                 },
                 value: ref.watch(autoBrightnessControlProvider),
+              ),
+            ),
+            ListTile(
+              leading: const Text(
+                "%",
+                style: TextStyle(fontSize: 18),
+              ),
+              title: const Text("Show Percentage Change"),
+              trailing: CupertinoSwitch(
+                onChanged: (val) {
+                  ref
+                      .read(showPercentChangeProvider.notifier)
+                      .changeShowPercentChange(val);
+                },
+                value: ref.watch(showPercentChangeProvider),
               ),
             ),
             ListTile(

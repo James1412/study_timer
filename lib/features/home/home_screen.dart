@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:study_timer/features/home/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/home/view_models/study_session_vm.dart';
+import 'package:study_timer/features/settings/view_models/show_percent_change_vm.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
 import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
@@ -231,23 +232,24 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                           ),
                           const Gap(5),
-                          Text(
-                            "${getPercentChange(dateIndex, studyDates) > 0.0 ? "+" : ""}${getPercentChange(dateIndex, studyDates)}%",
-                            style: TextStyle(
-                              color: getPercentChange(dateIndex, studyDates) <
-                                      0.0
-                                  ? Colors.red
-                                  : getPercentChange(dateIndex, studyDates) ==
-                                          0.0
-                                      ? Colors.grey
-                                      : Colors.green,
-                              fontWeight: FontWeight.w500,
+                          if (ref.watch(showPercentChangeProvider))
+                            Text(
+                              "${getPercentChange(dateIndex, studyDates) > 0.0 ? "+" : ""}${getPercentChange(dateIndex, studyDates)}%",
+                              style: TextStyle(
+                                color: getPercentChange(dateIndex, studyDates) <
+                                        0.0
+                                    ? Colors.red
+                                    : getPercentChange(dateIndex, studyDates) ==
+                                            0.0
+                                        ? Colors.grey
+                                        : Colors.green,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
-                    const Gap(20),
+                    const Gap(5),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,

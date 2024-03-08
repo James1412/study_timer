@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:study_timer/features/settings/view_models/show_percent_change_vm.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
 
@@ -22,7 +23,7 @@ class GridStatBox extends ConsumerWidget {
         color: getStatsBoxColor(ref),
         borderRadius: BorderRadius.circular(10),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -48,13 +49,17 @@ class GridStatBox extends ConsumerWidget {
                     fontSize: 23,
                   ),
                 ),
-                if (change != null) ...[
+                if (change != null && ref.watch(showPercentChangeProvider)) ...[
                   const Gap(5),
                   Text(
                     change!,
                     style: TextStyle(
                       fontSize: 13,
-                      color: change!.contains('-') ? Colors.red : Colors.green,
+                      color: change!.contains('-')
+                          ? Colors.red
+                          : double.parse(change!.replaceAll("%", "")) == 0
+                              ? Colors.grey
+                              : Colors.green,
                     ),
                   ),
                 ],

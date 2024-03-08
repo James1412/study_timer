@@ -181,8 +181,10 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
         if (ref.watch(autoBrightnessControlProvider)) {
           await ScreenBrightness().resetScreenBrightness();
           final currentBrightness = await ScreenBrightness().current;
-          await Future.delayed(const Duration(seconds: 1));
-          await ScreenBrightness().setScreenBrightness(currentBrightness / 5);
+          await Future.delayed(const Duration(seconds: 3));
+          if (isPlaying) {
+            await ScreenBrightness().setScreenBrightness(currentBrightness / 5);
+          }
         }
       },
       child: Scaffold(

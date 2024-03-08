@@ -22,6 +22,7 @@ Future<void> hiveInit() async {
   Hive.registerAdapter(MainColorsAdapter());
   await Hive.openBox(darkmodeHiveBoxConst);
   await Hive.openBox(autoBrightnessHiveBoxConst);
+  await Hive.openBox(showPercentChangeHiveBoxConst);
   await Hive.openBox<MainColors>(mainColorHiveBoxConst);
 }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:study_timer/features/home/models/study_session_model.dart';
+import 'package:study_timer/features/home/view_models/study_session_vm.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 
 class SubjectStatBox extends ConsumerWidget {
@@ -22,7 +24,7 @@ class SubjectStatBox extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Subjects this week",
+            "Subjects of the week",
             style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 15,
@@ -30,25 +32,31 @@ class SubjectStatBox extends ConsumerWidget {
           ),
           const Gap(10),
           ...sortedEntries.map((e) => subjectRow(
-              e.key, double.parse((e.value.inMinutes / 60).toStringAsFixed(1))))
+              ref
+                  .watch(studySessionProvider)
+                  .where((element) => element.subjectName == e.key)
+                  .first,
+              double.parse((e.value.inMinutes / 60).toStringAsFixed(1))))
         ],
       ),
     );
   }
 }
 
-Widget subjectRow(String subjectName, double hour) {
+Widget subjectRow(StudySessionModel model, double hour) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 1.5),
+    padding: const EdgeInsets.symmetric(vertical: 2.5),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
-            const Icon(CupertinoIcons.book),
+            Icon(
+              model.icon ?? CupertinoIcons.book,
+            ),
             const Gap(5),
             Text(
-              subjectName,
+              model.subjectName,
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,

@@ -79,7 +79,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
       return 0;
     }
     return double.parse(
-        ((totalTime.inMinutes / numOfDays) / 60).toStringAsFixed(1));
+        ((totalTime.inMinutes / numOfDays) / 60).toStringAsFixed(2));
   }
 
   String avgStudyHourPerDayPercentChange() {

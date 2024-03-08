@@ -102,22 +102,26 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
               children: [
                 GestureDetector(
                   onTap: () {
+                    iosLightFeedback();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const HeatMapScreen()),
+                          builder: (context) => const HeatMapCalendarScreen()),
                     );
                   },
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Total Study Time",
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.w400),
-                      ),
-                      Icon(FluentIcons.calendar_16_regular),
-                    ],
+                  child: Container(
+                    color: Colors.transparent,
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Total Study Time",
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w400),
+                        ),
+                        Icon(FluentIcons.calendar_16_regular),
+                      ],
+                    ),
                   ),
                 ),
                 // Total Duration

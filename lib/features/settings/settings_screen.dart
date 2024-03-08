@@ -57,7 +57,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 "%",
                 style: TextStyle(fontSize: 18),
               ),
-              title: const Text("Show Percentage Change"),
+              title: const Text("Show Percent Change"),
               trailing: CupertinoSwitch(
                 onChanged: (val) {
                   ref
@@ -90,16 +90,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
             ),
             //TODO: remove ads by watching rewarded ads or pay $1.99
-            ListTile(
-              leading: const Icon(FluentIcons.gift_24_regular),
-              title: const Text("Remove Ads for Today"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(FluentIcons.gift_24_filled),
-              title: const Text("Remove Ads Forever"),
-              onTap: () {},
-            ),
+            // ListTile(
+            //   leading: const Icon(FluentIcons.gift_24_regular),
+            //   title: const Text("Remove Ads for Today"),
+            //   onTap: () {},
+            // ),
+            // ListTile(
+            //   leading: const Icon(FluentIcons.gift_24_filled),
+            //   title: const Text("Remove Ads Forever"),
+            //   onTap: () {},
+            // ),
             ListTile(
               leading: const Icon(FluentIcons.info_20_regular),
               title: const Text("About"),

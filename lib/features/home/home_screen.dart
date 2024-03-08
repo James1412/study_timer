@@ -25,13 +25,20 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class HomeScreenState extends ConsumerState<HomeScreen> {
-  late PageController pageController =
-      PageController(initialPage: ref.watch(studyDatesProvider).length - 1);
+  late PageController pageController;
 
   @override
   void dispose() {
     pageController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = PageController(
+        // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+        initialPage: ref.read(studyDatesProvider.notifier).state.length - 1);
   }
 
   void onEditTap(StudySessionModel studyTimeModel) async {

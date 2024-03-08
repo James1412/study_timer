@@ -47,13 +47,11 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
     if (specificWeek == null) {
       return studySessions
           .where((element) => isInTheWeek(element.date))
-          .toList()
-        ..sort((a, b) => a.date.compareTo(b.date));
+          .toList();
     }
     return studySessions
         .where((element) => isInTheWeek(element.date, specificWeek))
-        .toList()
-      ..sort((a, b) => a.date.compareTo(b.date));
+        .toList();
   }
 
   Duration getWeeklyTotalStudyTime([DateTime? specificWeek]) {
@@ -70,14 +68,36 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
     return studyTimeOfTheWeek;
   }
 
-  double maxDurationOfTheWeek() {
-    List<StudySessionModel> sessions = studySessionsOfTheWeek();
+  double maxDurationOfTheWeek([DateTime? specificWeek]) {
+    List<StudySessionModel> sessions;
+    if (specificWeek == null) {
+      sessions = studySessionsOfTheWeek();
+    } else {
+      sessions = studySessionsOfTheWeek(specificWeek);
+    }
     sessions.sort((a, b) => a.duration.compareTo(b.duration));
     double maxHour = 0;
     if (sessions.isNotEmpty) {
       maxHour = sessions.last.duration.inMinutes / 60;
     }
     return double.parse(maxHour.toStringAsFixed(1));
+  }
+
+  double compareToPreviousWeek() {
+    final currentWeekStudyTime = getWeeklyTotalStudyTime().inMinutes;
+    final prevWeekStudyTime =
+        getWeeklyTotalStudyTime(weekDate.subtract(const Duration(days: 7)))
+            .inMinutes;
+    double percentage = 0;
+    if (prevWeekStudyTime == 0.0 && currentWeekStudyTime == 0.0) {
+      percentage = 0.0;
+    } else if (prevWeekStudyTime == 0) {
+      percentage = 100.0;
+    } else {
+      percentage =
+          (currentWeekStudyTime - prevWeekStudyTime) / prevWeekStudyTime;
+    }
+    return double.parse(percentage.toStringAsFixed(1));
   }
 
   List<IndividualBar> barData() {
@@ -101,23 +121,6 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
   }
 
   DateTime weekDate = onlyDate(DateTime.now());
-
-  double compareToPreviousWeek() {
-    final currentWeekStudyTime = getWeeklyTotalStudyTime().inMinutes;
-    final prevWeekStudyTime =
-        getWeeklyTotalStudyTime(weekDate.subtract(const Duration(days: 7)))
-            .inMinutes;
-    double percentage = 0;
-    if (prevWeekStudyTime == 0.0 && currentWeekStudyTime == 0.0) {
-      percentage = 0.0;
-    } else if (prevWeekStudyTime == 0) {
-      percentage = 100.0;
-    } else {
-      percentage =
-          (currentWeekStudyTime - prevWeekStudyTime) / prevWeekStudyTime;
-    }
-    return double.parse(percentage.toStringAsFixed(1));
-  }
 
   @override
   Widget build(BuildContext context) {

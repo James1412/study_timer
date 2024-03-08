@@ -178,10 +178,12 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
 
     return GestureDetector(
       onTap: () async {
-        await ScreenBrightness().resetScreenBrightness();
-        final currentBrightness = await ScreenBrightness().current;
-        await Future.delayed(const Duration(seconds: 1));
-        await ScreenBrightness().setScreenBrightness(currentBrightness / 5);
+        if (ref.watch(autoBrightnessControlProvider)) {
+          await ScreenBrightness().resetScreenBrightness();
+          final currentBrightness = await ScreenBrightness().current;
+          await Future.delayed(const Duration(seconds: 1));
+          await ScreenBrightness().setScreenBrightness(currentBrightness / 5);
+        }
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,

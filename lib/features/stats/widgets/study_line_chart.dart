@@ -21,16 +21,16 @@ class StudyLineChart extends ConsumerStatefulWidget {
 }
 
 class _StudyLineChartState extends ConsumerState<StudyLineChart> {
-  bool isInTheWeekOf(DateTime date) {
+  bool isInTheWeek(DateTime date) {
     date = onlyDate(date);
     DateTime firstDateOfTheWeek =
-        onlyDate(date.subtract(Duration(days: weekDate.weekday - 1)));
+        onlyDate(weekDate.subtract(Duration(days: weekDate.weekday - 1)));
     DateTime lastDateOfTheWeek = onlyDate(
-        date.add(Duration(days: DateTime.daysPerWeek - weekDate.weekday)));
-    if ((weekDate.isAfter(firstDateOfTheWeek) ||
-                weekDate.isAtSameMomentAs(firstDateOfTheWeek)) &&
-            weekDate.isBefore(lastDateOfTheWeek) ||
-        weekDate.isAtSameMomentAs(lastDateOfTheWeek)) {
+        weekDate.add(Duration(days: DateTime.daysPerWeek - weekDate.weekday)));
+    if ((date.isAfter(firstDateOfTheWeek) ||
+                date.isAtSameMomentAs(firstDateOfTheWeek)) &&
+            date.isBefore(lastDateOfTheWeek) ||
+        date.isAtSameMomentAs(lastDateOfTheWeek)) {
       return true;
     }
     return false;
@@ -38,7 +38,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
 
   List<StudySessionModel> studySessionsOfTheWeek() {
     List<StudySessionModel> studySessions = ref.watch(studySessionProvider);
-    return studySessions.where((element) => isInTheWeekOf(weekDate)).toList();
+    return studySessions.where((element) => isInTheWeek(element.date)).toList();
   }
 
   Duration getWeeklyTotalStudyTime() {
@@ -78,6 +78,14 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
           x: i, y: double.parse((totalStudyTime / 60).toStringAsFixed(1))));
     }
     return data;
+  }
+
+  bool isInSpecificWeek(DateTime date, DateTime week) {
+    DateTime weekStart = week.subtract(Duration(days: week.weekday - 1));
+    DateTime weekEnd =
+        weekStart.add(const Duration(days: DateTime.daysPerWeek - 1));
+
+    return date.isAfter(weekStart) && date.isBefore(weekEnd);
   }
 
   DateTime weekDate = onlyDate(DateTime.now());
@@ -127,24 +135,10 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                   style: const TextStyle(
                       fontSize: 25, fontWeight: FontWeight.w700),
                 ),
-                const Gap(2),
-                Opacity(
-                  opacity: 0.7,
-                  child: Text(
-                    isInTheWeekOf(DateTime.now())
-                        ? "This week"
-                        : isInTheWeekOf(DateTime.now()
-                                .subtract(const Duration(days: 7)))
-                            ? "Last week"
-                            : "Week of ${DateFormat.yMMMMd().format(weekDate)}",
-                    style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w400),
-                  ),
-                ),
-                const Gap(10),
               ],
             ),
           ),
+          const Gap(25),
           Expanded(
             child: BarChart(
               BarChartData(
@@ -190,30 +184,46 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
             children: [
               Expanded(
                 child: GestureDetector(
-                    onTap: () {
-                      iosLightFeedback();
-                      weekDate = weekDate.subtract(const Duration(days: 7));
-                      setState(() {});
-                    },
-                    child: const Icon(FluentIcons.chevron_left_12_filled)),
+                  onTap: () {
+                    iosLightFeedback();
+                    weekDate = weekDate.subtract(const Duration(days: 7));
+                    setState(() {});
+                  },
+                  child: Container(
+                      color: Colors.transparent,
+                      child: const Icon(FluentIcons.chevron_left_12_filled)),
+                ),
               ),
-              SizedBox(
+              Container(
+                color: Colors.transparent,
                 width: 180,
-                child:
-                    Center(child: Text(DateFormat.yMMMMd().format(weekDate))),
+                child: Center(
+                    child: Text(
+                  isInSpecificWeek(weekDate, DateTime.now())
+                      ? "This week"
+                      : isInSpecificWeek(weekDate,
+                              DateTime.now().subtract(const Duration(days: 7)))
+                          ? "Last week"
+                          : "Week of ${DateFormat.yMd().format(weekDate)}",
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.w400),
+                )),
               ),
               Expanded(
                 child: GestureDetector(
                   onTap: () {
                     iosLightFeedback();
-                    if (!isInTheWeekOf(DateTime.now())) {
+                    if (!isInTheWeek(DateTime.now())) {
                       weekDate = weekDate.add(const Duration(days: 7));
                     }
                     setState(() {});
                   },
-                  child: Opacity(
-                      opacity: isInTheWeekOf(DateTime.now()) ? 0.5 : 1,
-                      child: const Icon(FluentIcons.chevron_right_12_filled)),
+                  child: Container(
+                    color: Colors.transparent,
+                    child: Opacity(
+                        opacity: isInTheWeek(DateTime.now()) ? 0.5 : 1,
+                        child: const Icon(FluentIcons.chevron_right_12_filled)),
+                  ),
                 ),
               ),
             ],

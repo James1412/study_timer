@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import 'package:study_timer/features/home/models/study_session_model.dart';
+import 'package:study_timer/features/study_sessions/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
-import 'package:study_timer/features/home/view_models/study_session_vm.dart';
+import 'package:study_timer/features/study_sessions/view_models/study_session_vm.dart';
 import 'package:study_timer/features/settings/view_models/auto_brightness_vm.dart';
 import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
 import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
@@ -151,7 +151,11 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
               iosLightFeedback();
               duration = roundSeconds(duration);
               StudySessionModel newStudySession = StudySessionModel(
-                icon: null,
+                iconData: [
+                  CupertinoIcons.book.codePoint,
+                  CupertinoIcons.book.fontFamily,
+                  CupertinoIcons.book.fontPackage
+                ],
                 subjectName: controller.text,
                 date: onlyDate(DateTime.now()),
                 duration: duration,

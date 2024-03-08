@@ -5,9 +5,10 @@ import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
-import 'package:study_timer/features/home/models/study_session_model.dart';
+import 'package:study_timer/features/study_sessions/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
-import 'package:study_timer/features/home/view_models/study_session_vm.dart';
+import 'package:study_timer/features/study_sessions/view_models/study_session_vm.dart';
+import 'package:study_timer/features/stats/calculations/stats_calculation.dart';
 import 'package:study_timer/features/stats/widgets/grid_stat_box.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
@@ -39,11 +40,8 @@ class _HeatMapScreenState extends ConsumerState<HeatMapCalendarScreen> {
     return datasets;
   }
 
-  late List<StudySessionModel> sessionsOnDate = ref
-      .watch(studySessionProvider)
-      .where((element) =>
-          onlyDate(element.date).isAtSameMomentAs(onlyDate(DateTime.now())))
-      .toList();
+  late List<StudySessionModel> sessionsOnDate =
+      studySessionsOfTheDay(ref, DateTime.now());
 
   DateTime selectedDate = DateTime.now();
   DateTime selectedMonth = DateTime.now();
@@ -70,11 +68,7 @@ class _HeatMapScreenState extends ConsumerState<HeatMapCalendarScreen> {
                 initDate: onlyDate(DateTime.now()),
                 onClick: (DateTime date) {
                   iosLightFeedback();
-                  sessionsOnDate = ref
-                      .watch(studySessionProvider)
-                      .where((element) => onlyDate(element.date)
-                          .isAtSameMomentAs(onlyDate(date)))
-                      .toList();
+                  sessionsOnDate = studySessionsOfTheDay(ref, date);
                   selectedDate = date;
                   setState(() {});
                 },
@@ -110,7 +104,11 @@ class _HeatMapScreenState extends ConsumerState<HeatMapCalendarScreen> {
                       itemBuilder: (context, index) => ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: Icon(
-                          sessionsOnDate[index].icon ?? CupertinoIcons.book,
+                          IconData(
+                            sessionsOnDate[index].iconData[0],
+                            fontFamily: sessionsOnDate[index].iconData[1],
+                            fontPackage: sessionsOnDate[index].iconData[2],
+                          ),
                           size: 25,
                         ),
                         title: Text(sessionsOnDate[index].subjectName),
@@ -145,6 +143,16 @@ class _HeatMapScreenState extends ConsumerState<HeatMapCalendarScreen> {
                   ),
                   GridStatBox(
                     title: 'Study sessions of the month',
+                    stat: "10",
+                    change: '10%',
+                  ),
+                  GridStatBox(
+                    title: 'Study time of the week',
+                    stat: "10",
+                    change: '10%',
+                  ),
+                  GridStatBox(
+                    title: 'Study sessions of the week',
                     stat: "10",
                     change: '10%',
                   ),

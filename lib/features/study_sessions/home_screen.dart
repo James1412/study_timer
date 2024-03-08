@@ -172,6 +172,20 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     studySessionModel = studySessionModel
       ..iconData = [icon.codePoint, icon.fontFamily, icon.fontPackage];
     ref.read(studySessionProvider.notifier).editSubjectIcon(studySessionModel);
+
+    // TODO: save codePoint, fontFamily, and fontPackage in Hive
+    showDialog(
+      context: context,
+      builder: (context) => Center(
+        child: Icon(
+          IconData(
+            icon.codePoint,
+            fontFamily: icon.fontFamily,
+            fontPackage: icon.fontPackage,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -260,15 +274,13 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                               color: getStatsBoxColor(ref),
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: Icon(
-                              IconData(
-                                studySessionsOnDate[sessionIndex].iconData[0],
-                                fontFamily: studySessionsOnDate[sessionIndex]
-                                    .iconData[1],
-                                fontPackage: studySessionsOnDate[sessionIndex]
-                                    .iconData[2],
-                              ),
-                            ),
+                            child: Icon(IconData(
+                              studySessionsOnDate[sessionIndex].iconData[0],
+                              fontFamily:
+                                  studySessionsOnDate[sessionIndex].iconData[1],
+                              fontPackage:
+                                  studySessionsOnDate[sessionIndex].iconData[2],
+                            )),
                           ),
                         ),
                         title: Text(

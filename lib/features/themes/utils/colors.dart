@@ -13,7 +13,7 @@ Color darkBackground(WidgetRef ref) {
   } else if (ref.watch(mainColorProvider) == redColor) {
     return const Color(0xff1D1A1A);
   }
-  return const Color(0xff1A1D1A);
+  return const Color.fromARGB(255, 22, 22, 22);
 }
 
 Color darkNavigationBar(WidgetRef ref) {

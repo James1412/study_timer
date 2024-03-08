@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:study_timer/features/navigation/main_navigation_screen.dart';
+import 'package:study_timer/features/study_sessions/models/study_session_model.dart';
 import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
 import 'package:study_timer/features/themes/models/main_color_model.dart';
 import 'package:study_timer/features/themes/utils/light_dark_themes.dart';
@@ -20,10 +21,13 @@ void main() async {
 Future<void> hiveInit() async {
   await Hive.initFlutter();
   Hive.registerAdapter(MainColorsAdapter());
+  Hive.registerAdapter(StudySessionModelAdapter());
   await Hive.openBox(darkmodeHiveBoxConst);
   await Hive.openBox(autoBrightnessHiveBoxConst);
   await Hive.openBox(showPercentChangeHiveBoxConst);
   await Hive.openBox<MainColors>(mainColorHiveBoxConst);
+  await Hive.openBox(firstTimeHiveBoxConst);
+  await Hive.openBox<StudySessionModel>(studySessionsHiveBoxConst);
 }
 
 class StudyTimerApp extends ConsumerWidget {

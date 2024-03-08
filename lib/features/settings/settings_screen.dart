@@ -104,7 +104,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               leading: const Icon(FluentIcons.info_20_regular),
               title: const Text("About"),
               onTap: () {
-                showAboutDialog(context: context);
+                showAboutDialog(
+                  context: context,
+                  applicationName: "Study Timer",
+                );
               },
             ),
           ],

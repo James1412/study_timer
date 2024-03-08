@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:study_timer/features/home/models/study_session_model.dart';
-import 'package:study_timer/features/home/view_models/study_session_vm.dart';
+import 'package:study_timer/features/study_sessions/models/study_session_model.dart';
+import 'package:study_timer/features/study_sessions/view_models/study_session_vm.dart';
+import 'package:study_timer/features/stats/calculations/stats_calculation.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 
 class SubjectStatBox extends ConsumerWidget {
-  final Map<String, Duration> map;
-  const SubjectStatBox(this.map, {super.key});
+  const SubjectStatBox({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sortedEntries = map.entries.toList()
+    final sortedEntries = weeklySubjectDurationMap(ref).entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     return Container(
       width: double.maxFinite,
@@ -52,7 +52,11 @@ Widget subjectRow(StudySessionModel model, double hour) {
         Row(
           children: [
             Icon(
-              model.icon ?? CupertinoIcons.book,
+              IconData(
+                model.iconData[0],
+                fontFamily: model.iconData[1],
+                fontPackage: model.iconData[2],
+              ),
             ),
             const Gap(5),
             Text(

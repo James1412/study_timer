@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
-import 'package:study_timer/features/home/models/study_session_model.dart';
+import 'package:study_timer/features/study_sessions/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
+
 import 'package:study_timer/features/settings/view_models/show_percent_change_vm.dart';
+import 'package:study_timer/features/stats/calculations/stats_calculation.dart';
 import 'package:study_timer/features/stats/heat_map_screen.dart';
 import 'package:study_timer/features/stats/view_models/week_date_vm.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
@@ -14,62 +16,25 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
 import 'package:study_timer/utils/ios_haptic.dart';
 
-class StudyLineChart extends ConsumerStatefulWidget {
-  final Function isInTheWeek;
-  final Function studySessionsOfTheWeek;
-  final Function getWeeklyTotalStudyTime;
-  const StudyLineChart(
-      {required this.isInTheWeek,
-      required this.studySessionsOfTheWeek,
-      required this.getWeeklyTotalStudyTime,
-      super.key});
+class StudyBarChart extends ConsumerStatefulWidget {
+  const StudyBarChart({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _StudyLineChartState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _StudyBarChartState();
 }
 
-class _StudyLineChartState extends ConsumerState<StudyLineChart> {
-  double maxDurationOfTheWeek([DateTime? specificWeek]) {
-    List<StudySessionModel> sessions;
-    if (specificWeek == null) {
-      sessions = widget.studySessionsOfTheWeek();
-    } else {
-      sessions = widget.studySessionsOfTheWeek(specificWeek);
-    }
-    sessions.sort((a, b) => a.duration.compareTo(b.duration));
-    double maxHour = 0;
-    if (sessions.isNotEmpty) {
-      maxHour = sessions.last.duration.inMinutes / 60;
-    }
-    return double.parse(maxHour.toStringAsFixed(1));
-  }
-
-  double totalStudyTimeComparedToPreviousWeek() {
-    final currentWeekStudyTime = widget.getWeeklyTotalStudyTime().inMinutes;
-    final prevWeekStudyTime = widget
-        .getWeeklyTotalStudyTime(weekDate.subtract(const Duration(days: 7)))
-        .inMinutes;
-    double percentage = 0;
-    if (prevWeekStudyTime == 0.0 && currentWeekStudyTime == 0.0) {
-      percentage = 0.0;
-    } else if (prevWeekStudyTime == 0) {
-      percentage = 100.0;
-    } else {
-      percentage =
-          (currentWeekStudyTime - prevWeekStudyTime) / prevWeekStudyTime * 100;
-    }
-    return double.parse(percentage.toStringAsFixed(1));
-  }
+class _StudyBarChartState extends ConsumerState<StudyBarChart> {
+  late DateTime weekDate = ref.watch(weekDateProvider);
 
   List<IndividualBar> barData() {
     List<IndividualBar> data = [];
-    final studySessions = widget.studySessionsOfTheWeek();
+    final studySessions = studySessionsOfTheWeek(ref);
+    final weekDate = ref.watch(weekDateProvider);
     DateTime firstDateOfTheWeek =
         weekDate.subtract(Duration(days: weekDate.weekday - 1));
     for (int i = 0; i < 7; i++) {
       DateTime currentDate = firstDateOfTheWeek.add(Duration(days: i));
       double totalStudyTime = 0;
-
       for (StudySessionModel session in studySessions) {
         if (onlyDate(session.date) == currentDate) {
           totalStudyTime += session.duration.inMinutes.toDouble();
@@ -80,8 +45,6 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
     }
     return data;
   }
-
-  late DateTime weekDate = ref.watch(weekDateProvider);
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +90,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                 // Total Duration
                 Text(
                   prettyDuration(
-                    widget.getWeeklyTotalStudyTime(),
+                    getWeeklyTotalStudyTime(ref),
                     tersity: DurationTersity.minute,
                     upperTersity: DurationTersity.hour,
                   ),
@@ -138,13 +101,13 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                 // Percentage Change
                 if (ref.watch(showPercentChangeProvider))
                   Text(
-                    totalStudyTimeComparedToPreviousWeek() > 0
-                        ? "+${totalStudyTimeComparedToPreviousWeek()}%"
-                        : "${totalStudyTimeComparedToPreviousWeek()}%",
+                    totalStudyTimeComparedToPreviousWeek(ref) > 0
+                        ? "+${totalStudyTimeComparedToPreviousWeek(ref)}%"
+                        : "${totalStudyTimeComparedToPreviousWeek(ref)}%",
                     style: TextStyle(
-                        color: totalStudyTimeComparedToPreviousWeek() > 0
+                        color: totalStudyTimeComparedToPreviousWeek(ref) > 0
                             ? Colors.green
-                            : totalStudyTimeComparedToPreviousWeek() == 0
+                            : totalStudyTimeComparedToPreviousWeek(ref) == 0
                                 ? Colors.grey
                                 : Colors.red),
                   ),
@@ -155,7 +118,8 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
           Expanded(
             child: BarChart(
               BarChartData(
-                maxY: maxDurationOfTheWeek() + maxDurationOfTheWeek() / 2.5,
+                maxY:
+                    maxDurationOfTheWeek(ref) + maxDurationOfTheWeek(ref) / 2.5,
                 minY: 0,
                 borderData: FlBorderData(show: false),
                 gridData: const FlGridData(show: false),
@@ -212,9 +176,9 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                 width: 180,
                 child: Center(
                     child: Text(
-                  widget.isInTheWeek(weekDate, DateTime.now())
+                  isInTheWeek(ref, weekDate, DateTime.now())
                       ? "This week"
-                      : widget.isInTheWeek(weekDate,
+                      : isInTheWeek(ref, weekDate,
                               DateTime.now().subtract(const Duration(days: 7)))
                           ? "Last week"
                           : "Week of ${DateFormat.yMd().format(weekDate)}",
@@ -226,7 +190,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                 child: GestureDetector(
                   onTap: () {
                     iosLightFeedback();
-                    if (!widget.isInTheWeek(DateTime.now())) {
+                    if (!isInTheWeek(ref, DateTime.now())) {
                       ref.read(weekDateProvider.notifier).changeWeekDate(
                           weekDate.add(const Duration(days: 7)));
                     }
@@ -234,7 +198,7 @@ class _StudyLineChartState extends ConsumerState<StudyLineChart> {
                   child: Container(
                     color: Colors.transparent,
                     child: Opacity(
-                        opacity: widget.isInTheWeek(DateTime.now()) ? 0.3 : 1,
+                        opacity: isInTheWeek(ref, DateTime.now()) ? 0.3 : 1,
                         child: const Icon(FluentIcons.chevron_right_12_filled)),
                   ),
                 ),

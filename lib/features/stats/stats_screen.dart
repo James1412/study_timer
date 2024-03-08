@@ -117,6 +117,71 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
     }
   }
 
+  String findTopSubjectOfTheWeek() {
+    Map<String, int> subjectTotalDuration = {};
+    for (StudySessionModel session in studySessionsOfTheWeek()) {
+      String subject = session.subjectName;
+      int durationInMinutes = session.duration.inMinutes;
+
+      if (subjectTotalDuration.containsKey(subject)) {
+        subjectTotalDuration[subject] =
+            durationInMinutes + subjectTotalDuration[subject]!;
+      } else {
+        subjectTotalDuration[subject] = durationInMinutes;
+      }
+    }
+    String? topSubject;
+    int maxDuration = 0;
+    subjectTotalDuration.forEach((subject, duration) {
+      if (duration > maxDuration) {
+        topSubject = subject;
+        maxDuration = duration;
+      }
+    });
+
+    return topSubject ?? "no data";
+  }
+
+  int findLongestStudyStreak() {
+    List<StudySessionModel> studySessions = ref.watch(studySessionProvider);
+    if (studySessions.isEmpty) {
+      return 0;
+    }
+    studySessions.sort((a, b) => a.date.compareTo(b.date));
+
+    int longestStreak = 1;
+    int currentStreak = 1;
+
+    for (int i = 1; i < studySessions.length; i++) {
+      if (studySessions[i].date.difference(studySessions[i - 1].date).inDays ==
+          1) {
+        currentStreak++;
+      } else {
+        currentStreak = 1;
+      }
+      if (currentStreak > longestStreak) {
+        longestStreak = currentStreak;
+      }
+    }
+
+    return longestStreak;
+  }
+
+  Map<String, Duration> calculateSubjectDuration() {
+    Map<String, Duration> subjectDurationMap = {};
+
+    for (StudySessionModel session in studySessionsOfTheWeek()) {
+      String subject = session.subjectName;
+      if (!subjectDurationMap.containsKey(subject)) {
+        subjectDurationMap[subject] = session.duration;
+      } else {
+        subjectDurationMap[subject] =
+            session.duration + subjectDurationMap[subject]!;
+      }
+    }
+    return subjectDurationMap;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -167,18 +232,18 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                 stat: studySessionsOfTheWeek().length.toString(),
                 change: '${percentChangeStudySessionsOfTheWeek()}%',
               ),
-              const GridStatBox(
+              GridStatBox(
                 title: 'Top subject of the week',
-                stat: "Science",
+                stat: findTopSubjectOfTheWeek(),
               ),
-              const GridStatBox(
+              GridStatBox(
                 title: 'Longest study streak',
-                stat: "7 day",
+                stat: "${findLongestStudyStreak()} day",
               ),
             ],
           ),
           const Gap(16),
-          const SubjectStatBox(),
+          SubjectStatBox(calculateSubjectDuration()),
         ],
       ),
     );

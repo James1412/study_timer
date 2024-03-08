@@ -4,10 +4,13 @@ import 'package:gap/gap.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 
 class SubjectStatBox extends ConsumerWidget {
-  const SubjectStatBox({super.key});
+  final Map<String, Duration> map;
+  const SubjectStatBox(this.map, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final sortedEntries = map.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
     return Container(
       width: double.maxFinite,
       decoration: BoxDecoration(
@@ -26,20 +29,15 @@ class SubjectStatBox extends ConsumerWidget {
             ),
           ),
           const Gap(10),
-          //TODO: parameter value -> model
-          subjectRow("Science"),
-          subjectRow("Math"),
-          subjectRow("Computer"),
-          subjectRow("Linear"),
-          subjectRow("IDk"),
-          subjectRow("Sleep"),
+          ...sortedEntries.map((e) => subjectRow(
+              e.key, double.parse((e.value.inMinutes / 60).toStringAsFixed(1))))
         ],
       ),
     );
   }
 }
 
-Widget subjectRow(String subjectName) {
+Widget subjectRow(String subjectName, double hour) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 1.5),
     child: Row(
@@ -58,9 +56,9 @@ Widget subjectRow(String subjectName) {
             ),
           ],
         ),
-        const Text(
-          "6.5h",
-          style: TextStyle(
+        Text(
+          "${hour}h",
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),

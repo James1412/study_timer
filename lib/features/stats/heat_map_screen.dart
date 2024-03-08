@@ -46,6 +46,7 @@ class _HeatMapScreenState extends ConsumerState<HeatMapCalendarScreen> {
       .toList();
 
   DateTime selectedDate = DateTime.now();
+  DateTime selectedMonth = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +61,11 @@ class _HeatMapScreenState extends ConsumerState<HeatMapCalendarScreen> {
           child: ListView(
             children: [
               HeatMapCalendar(
+                onMonthChange: (DateTime month) {
+                  iosLightFeedback();
+                  selectedMonth = month;
+                  setState(() {});
+                },
                 showColorTip: false,
                 initDate: onlyDate(DateTime.now()),
                 onClick: (DateTime date) {
@@ -91,7 +97,8 @@ class _HeatMapScreenState extends ConsumerState<HeatMapCalendarScreen> {
                   children: [
                     Text(
                       DateFormat.yMMMEd().format(selectedDate),
-                      style: const TextStyle(fontSize: 20),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w600),
                     ),
                     const Divider(
                       thickness: 0.1,

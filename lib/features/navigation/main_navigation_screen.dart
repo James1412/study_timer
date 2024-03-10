@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,7 +45,7 @@ class _MainNavigationScreenState extends ConsumerState<MainNavigationScreen> {
         ],
       ),
       bottomNavigationBar: Container(
-        height: 85,
+        height: Platform.isAndroid ? 65 : 85,
         padding: const EdgeInsets.only(top: 10),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondary,

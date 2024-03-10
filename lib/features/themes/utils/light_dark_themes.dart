@@ -10,6 +10,7 @@ ThemeData lightTheme(WidgetRef ref) => ThemeData(
         secondary: lightNavigationBar,
       ),
       appBarTheme: AppBarTheme(
+        centerTitle: true,
         scrolledUnderElevation: 0.0,
         backgroundColor: lightBackground(ref),
         surfaceTintColor: lightBackground(ref),
@@ -30,6 +31,7 @@ ThemeData darkTheme(WidgetRef ref) => ThemeData(
         secondary: darkNavigationBar(ref),
       ),
       appBarTheme: AppBarTheme(
+        centerTitle: true,
         scrolledUnderElevation: 0.0,
         backgroundColor: darkBackground(ref),
         surfaceTintColor: darkBackground(ref),

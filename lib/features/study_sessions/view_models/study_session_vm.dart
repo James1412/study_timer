@@ -137,7 +137,6 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
     if (firstBox.get(firstTimeHiveBoxConst) == null) {
       firstBox.put(firstTimeHiveBoxConst, true);
     }
-    firstBox.delete(firstTimeHiveBoxConst);
     if (firstBox.get(firstTimeHiveBoxConst) == null) {
       for (StudySessionModel session in studySessions) {
         _repository.addStudySession(session);

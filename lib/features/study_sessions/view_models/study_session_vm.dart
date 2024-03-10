@@ -134,7 +134,6 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
 
     FirstTimeRepository firstTimeRepository = FirstTimeRepository();
     if (firstTimeRepository.isFirstTime) {
-      firstTimeRepository.setIsFirstTime(false);
       for (StudySessionModel session in studySessions) {
         _repository.addStudySession(session);
       }

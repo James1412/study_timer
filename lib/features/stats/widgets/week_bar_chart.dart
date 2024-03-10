@@ -101,13 +101,17 @@ class _WeekBarChartState extends ConsumerState<WeekBarChart> {
                 // Percentage Change
                 if (ref.watch(showPercentChangeProvider))
                   Text(
-                    totalStudyTimeComparedToPreviousWeek(ref) > 0
-                        ? "+${totalStudyTimeComparedToPreviousWeek(ref)}%"
-                        : "${totalStudyTimeComparedToPreviousWeek(ref)}%",
+                    totalStudyTimeComparedToPreviousWeekPercentage(ref) > 0
+                        ? "+${totalStudyTimeComparedToPreviousWeekPercentage(ref)}%"
+                        : "${totalStudyTimeComparedToPreviousWeekPercentage(ref)}%",
                     style: TextStyle(
-                        color: totalStudyTimeComparedToPreviousWeek(ref) > 0
+                        color: totalStudyTimeComparedToPreviousWeekPercentage(
+                                    ref) >
+                                0
                             ? Colors.green
-                            : totalStudyTimeComparedToPreviousWeek(ref) == 0
+                            : totalStudyTimeComparedToPreviousWeekPercentage(
+                                        ref) ==
+                                    0
                                 ? Colors.grey
                                 : Colors.red),
                   ),

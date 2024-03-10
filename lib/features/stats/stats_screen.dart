@@ -61,7 +61,8 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               GridStatBox(
                 title: 'Study sessions of the week',
                 stat: studySessionsOfTheWeek(ref).length.toString(),
-                change: '${percentChangeStudySessionsOfTheWeek(ref)}%',
+                change:
+                    '${totalStudySessionComparedToPreviousWeekPercentage(ref)}%',
               ),
               GridStatBox(
                 title: 'Top subject of the week',

@@ -25,6 +25,14 @@ bool isInTheWeek(WidgetRef ref, DateTime date, [DateTime? specificWeekDate]) {
       date.isAtSameMomentAs(weekEnd));
 }
 
+List<StudySessionModel> studySessionsOfTheDay(WidgetRef ref, DateTime date) {
+  final allSessions = ref.watch(studySessionProvider);
+  return allSessions
+      .where(
+          (element) => onlyDate(element.date).isAtSameMomentAs(onlyDate(date)))
+      .toList();
+}
+
 List<StudySessionModel> studySessionsOfTheWeek(WidgetRef ref,
     [DateTime? specificWeek]) {
   List<StudySessionModel> studySessions = ref.watch(studySessionProvider);
@@ -38,11 +46,11 @@ List<StudySessionModel> studySessionsOfTheWeek(WidgetRef ref,
       .toList();
 }
 
-List<StudySessionModel> studySessionsOfTheDay(WidgetRef ref, DateTime date) {
-  final allSessions = ref.watch(studySessionProvider);
-  return allSessions
-      .where(
-          (element) => onlyDate(element.date).isAtSameMomentAs(onlyDate(date)))
+List<StudySessionModel> studySessionsOfTheMonth(WidgetRef ref, DateTime month) {
+  List<StudySessionModel> studySessions = ref.watch(studySessionProvider);
+  return studySessions
+      .where((element) => DateTime(element.date.year, element.date.month)
+          .isAtSameMomentAs(DateTime(month.year, month.month)))
       .toList();
 }
 
@@ -58,6 +66,15 @@ Duration getWeeklyTotalStudyTime(WidgetRef ref, [DateTime? specificWeek]) {
     studyTimeOfTheWeek += element.duration;
   }
   return studyTimeOfTheWeek;
+}
+
+Duration getMonthlyTotalStudyTime(WidgetRef ref, DateTime month) {
+  List<StudySessionModel> thisMonth = studySessionsOfTheMonth(ref, month);
+  Duration studyTimeOfTheMonth = Duration.zero;
+  for (StudySessionModel session in thisMonth) {
+    studyTimeOfTheMonth += session.duration;
+  }
+  return studyTimeOfTheMonth;
 }
 
 double avgStudyHourPerDay(WidgetRef ref, [DateTime? specificWeek]) {
@@ -92,7 +109,7 @@ String avgStudyHourPerDayPercentChange(WidgetRef ref) {
   }
 }
 
-String percentChangeStudySessionsOfTheWeek(WidgetRef ref) {
+String totalStudySessionComparedToPreviousWeekPercentage(WidgetRef ref) {
   final currentWeek = studySessionsOfTheWeek(ref).length;
   final prevWeek = studySessionsOfTheWeek(
           ref, ref.watch(weekDateProvider).subtract(const Duration(days: 7)))
@@ -101,6 +118,25 @@ String percentChangeStudySessionsOfTheWeek(WidgetRef ref) {
   if (prevWeek == 0 && currentWeek == 0) {
     percent = 0.0;
   } else if (prevWeek == 0) {
+    percent = 100.0;
+  }
+  if (double.parse((percent.toStringAsFixed(1))) > 0) {
+    return "+${double.parse((percent.toStringAsFixed(1)))}";
+  } else {
+    return "${double.parse((percent.toStringAsFixed(1)))}";
+  }
+}
+
+String totalStudySessionComparedToPreviousMonthPercentage(
+    WidgetRef ref, DateTime month) {
+  final currentMonth = studySessionsOfTheMonth(ref, month).length;
+  final previousMonth =
+      studySessionsOfTheMonth(ref, DateTime(month.year, month.month - 1))
+          .length;
+  double percent = ((currentMonth - previousMonth) / previousMonth) * 100;
+  if (previousMonth == 0 && currentMonth == 0) {
+    percent = 0.0;
+  } else if (previousMonth == 0) {
     percent = 100.0;
   }
   if (double.parse((percent.toStringAsFixed(1))) > 0) {
@@ -190,7 +226,7 @@ double maxDurationOfTheWeek(WidgetRef ref, [DateTime? specificWeek]) {
   return double.parse(maxHour.toStringAsFixed(1));
 }
 
-double totalStudyTimeComparedToPreviousWeek(WidgetRef ref) {
+double totalStudyTimeComparedToPreviousWeekPercentage(WidgetRef ref) {
   final currentWeekStudyTime = getWeeklyTotalStudyTime(ref).inMinutes;
   final weekDate = ref.watch(weekDateProvider);
   final prevWeekStudyTime =
@@ -206,4 +242,23 @@ double totalStudyTimeComparedToPreviousWeek(WidgetRef ref) {
         (currentWeekStudyTime - prevWeekStudyTime) / prevWeekStudyTime * 100;
   }
   return double.parse(percentage.toStringAsFixed(1));
+}
+
+double totalStudyTimeComparedToPreviousMonthPercentage(
+    WidgetRef ref, DateTime month) {
+  final currentMonthStudyTime = getMonthlyTotalStudyTime(ref, month).inMinutes;
+  final previousMonthStudyTime =
+      getMonthlyTotalStudyTime(ref, DateTime(month.year, month.month - 1))
+          .inMinutes;
+  double percent = 0;
+  if (previousMonthStudyTime == 0.0 && currentMonthStudyTime == 0.0) {
+    percent = 0.0;
+  } else if (previousMonthStudyTime == 0) {
+    percent = 100.0;
+  } else {
+    percent = (currentMonthStudyTime - previousMonthStudyTime) /
+        previousMonthStudyTime *
+        100;
+  }
+  return double.parse(percent.toStringAsFixed(1));
 }

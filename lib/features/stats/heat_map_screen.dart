@@ -1,6 +1,5 @@
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +12,7 @@ import 'package:study_timer/features/themes/utils/colors.dart';
 import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
 import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
 import 'package:study_timer/utils/ios_haptic.dart';
+import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 
 class HeatMapCalendarScreen extends ConsumerStatefulWidget {
   const HeatMapCalendarScreen({super.key});
@@ -133,27 +133,24 @@ class _HeatMapScreenState extends ConsumerState<HeatMapCalendarScreen> {
                 mainAxisSpacing: 16.0,
                 crossAxisSpacing: 16.0,
                 childAspectRatio: 1.25,
-                children: const [
-                  // TODO: Fix this
+                children: [
                   GridStatBox(
                     title: 'Study time of the month',
-                    stat: "10hr",
-                    change: '10%',
+                    stat:
+                        "${(getMonthlyTotalStudyTime(ref, selectedMonth).inMinutes / 60).toStringAsFixed(1)}hr",
+                    change: totalStudyTimeComparedToPreviousMonthPercentage(
+                                ref, selectedMonth) >
+                            0
+                        ? '+${totalStudyTimeComparedToPreviousMonthPercentage(ref, selectedMonth)}%'
+                        : "${totalStudyTimeComparedToPreviousMonthPercentage(ref, selectedMonth)}%",
                   ),
                   GridStatBox(
                     title: 'Study sessions of the month',
-                    stat: "10",
-                    change: '10%',
-                  ),
-                  GridStatBox(
-                    title: 'Study time of the week',
-                    stat: "10",
-                    change: '10%',
-                  ),
-                  GridStatBox(
-                    title: 'Study sessions of the week',
-                    stat: "10",
-                    change: '10%',
+                    stat: studySessionsOfTheMonth(ref, selectedMonth)
+                        .length
+                        .toString(),
+                    change:
+                        '${totalStudySessionComparedToPreviousMonthPercentage(ref, selectedMonth)}%',
                   ),
                 ],
               ),

@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 import 'package:study_timer/features/study_sessions/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
+import 'package:study_timer/features/study_sessions/repos/first_time_repo.dart';
 import 'package:study_timer/features/study_sessions/repos/study_session_repo.dart';
-import 'package:study_timer/utils/hive_box_const.dart';
 
 class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
   final StudySessionRepository _repository = StudySessionRepository();
@@ -133,11 +132,9 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
       ),
     ]..sort((a, b) => a.date.compareTo(b.date));
 
-    final firstBox = Hive.box(firstTimeHiveBoxConst);
-    if (firstBox.get(firstTimeHiveBoxConst) == null) {
-      firstBox.put(firstTimeHiveBoxConst, true);
-    }
-    if (firstBox.get(firstTimeHiveBoxConst) == null) {
+    FirstTimeRepository firstTimeRepository = FirstTimeRepository();
+    if (firstTimeRepository.isFirstTime) {
+      firstTimeRepository.setIsFirstTime(false);
       for (StudySessionModel session in studySessions) {
         _repository.addStudySession(session);
       }

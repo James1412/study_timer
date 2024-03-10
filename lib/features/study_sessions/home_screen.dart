@@ -172,20 +172,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     studySessionModel = studySessionModel
       ..iconData = [icon.codePoint, icon.fontFamily, icon.fontPackage];
     ref.read(studySessionProvider.notifier).editSubjectIcon(studySessionModel);
-
-    // TODO: save codePoint, fontFamily, and fontPackage in Hive
-    showDialog(
-      context: context,
-      builder: (context) => Center(
-        child: Icon(
-          IconData(
-            icon.codePoint,
-            fontFamily: icon.fontFamily,
-            fontPackage: icon.fontPackage,
-          ),
-        ),
-      ),
-    );
   }
 
   @override

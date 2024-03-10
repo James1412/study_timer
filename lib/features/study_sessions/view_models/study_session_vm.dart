@@ -73,7 +73,7 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
         iconData: [
           CupertinoIcons.book.codePoint,
           CupertinoIcons.book.fontFamily,
-          CupertinoIcons.book.fontPackage
+          CupertinoIcons.book.fontPackage,
         ],
       ),
       StudySessionModel(
@@ -84,7 +84,7 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
         iconData: [
           CupertinoIcons.book.codePoint,
           CupertinoIcons.book.fontFamily,
-          CupertinoIcons.book.fontPackage
+          CupertinoIcons.book.fontPackage,
         ],
       ),
       StudySessionModel(
@@ -95,7 +95,7 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
         iconData: [
           CupertinoIcons.book.codePoint,
           CupertinoIcons.book.fontFamily,
-          CupertinoIcons.book.fontPackage
+          CupertinoIcons.book.fontPackage,
         ],
       ),
       StudySessionModel(
@@ -106,7 +106,7 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
         iconData: [
           CupertinoIcons.book.codePoint,
           CupertinoIcons.book.fontFamily,
-          CupertinoIcons.book.fontPackage
+          CupertinoIcons.book.fontPackage,
         ],
       ),
       StudySessionModel(
@@ -117,7 +117,7 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
         iconData: [
           CupertinoIcons.book.codePoint,
           CupertinoIcons.book.fontFamily,
-          CupertinoIcons.book.fontPackage
+          CupertinoIcons.book.fontPackage,
         ],
       ),
       StudySessionModel(
@@ -137,9 +137,8 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
     if (firstBox.get(firstTimeHiveBoxConst) == null) {
       firstBox.put(firstTimeHiveBoxConst, true);
     }
-
-    if (_repository.getStudySessions().isEmpty &&
-        firstBox.get(firstTimeHiveBoxConst) == null) {
+    firstBox.delete(firstTimeHiveBoxConst);
+    if (firstBox.get(firstTimeHiveBoxConst) == null) {
       for (StudySessionModel session in studySessions) {
         _repository.addStudySession(session);
       }

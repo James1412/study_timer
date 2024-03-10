@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:study_timer/features/settings/settings_screen.dart';
-import 'package:study_timer/features/stats/calculations/stats_calculation.dart';
+import 'package:study_timer/features/stats/functions/stats_calculation.dart';
 import 'package:study_timer/features/stats/widgets/grid_stat_box.dart';
-import 'package:study_timer/features/stats/widgets/study_bar_chart.dart';
+import 'package:study_timer/features/stats/widgets/week_bar_chart.dart';
 import 'package:study_timer/features/stats/widgets/subject_stat_box.dart';
 import 'package:study_timer/utils/ios_haptic.dart';
 
@@ -43,7 +43,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
       body: ListView(
         padding: const EdgeInsets.only(left: 16.0, right: 16, bottom: 16),
         children: [
-          const StudyBarChart(),
+          const WeekBarChart(),
           const Gap(20),
           GridView.count(
             physics: const NeverScrollableScrollPhysics(),

@@ -1,5 +1,4 @@
 import 'package:duration/duration.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:study_timer/features/study_sessions/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
 import 'package:study_timer/features/study_sessions/view_models/study_session_vm.dart';
-import 'package:study_timer/features/stats/calculations/stats_calculation.dart';
+import 'package:study_timer/features/stats/functions/stats_calculation.dart';
 import 'package:study_timer/features/stats/widgets/grid_stat_box.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
@@ -135,7 +134,7 @@ class _HeatMapScreenState extends ConsumerState<HeatMapCalendarScreen> {
                 crossAxisSpacing: 16.0,
                 childAspectRatio: 1.25,
                 children: const [
-                  //TODO: Fix this
+                  // TODO: Fix this
                   GridStatBox(
                     title: 'Study time of the month',
                     stat: "10hr",

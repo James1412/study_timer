@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:study_timer/features/study_sessions/models/study_session_model.dart';
 import 'package:study_timer/features/study_sessions/view_models/study_session_vm.dart';
-import 'package:study_timer/features/stats/calculations/stats_calculation.dart';
+import 'package:study_timer/features/stats/functions/stats_calculation.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
 
 class SubjectStatBox extends ConsumerWidget {

@@ -8,7 +8,7 @@ import 'package:study_timer/features/study_sessions/models/study_session_model.d
 import 'package:study_timer/features/home/utils.dart';
 
 import 'package:study_timer/features/settings/view_models/show_percent_change_vm.dart';
-import 'package:study_timer/features/stats/calculations/stats_calculation.dart';
+import 'package:study_timer/features/stats/functions/stats_calculation.dart';
 import 'package:study_timer/features/stats/heat_map_screen.dart';
 import 'package:study_timer/features/stats/view_models/week_date_vm.dart';
 import 'package:study_timer/features/themes/utils/colors.dart';
@@ -16,14 +16,14 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
 import 'package:study_timer/utils/ios_haptic.dart';
 
-class StudyBarChart extends ConsumerStatefulWidget {
-  const StudyBarChart({super.key});
+class WeekBarChart extends ConsumerStatefulWidget {
+  const WeekBarChart({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _StudyBarChartState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _WeekBarChartState();
 }
 
-class _StudyBarChartState extends ConsumerState<StudyBarChart> {
+class _WeekBarChartState extends ConsumerState<WeekBarChart> {
   late DateTime weekDate = ref.watch(weekDateProvider);
 
   List<IndividualBar> barData() {

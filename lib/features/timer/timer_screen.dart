@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:study_timer/features/study_sessions/models/study_session_model.dart';
 import 'package:study_timer/features/home/utils.dart';
@@ -13,6 +14,7 @@ import 'package:study_timer/features/themes/view_models/dark_mode_vm.dart';
 import 'package:study_timer/features/themes/view_models/main_color_vm.dart';
 import 'package:study_timer/features/timer/utils.dart';
 import 'package:study_timer/features/timer/widgets/timer_widget.dart';
+import 'package:study_timer/utils/ad_helper.dart';
 import 'package:study_timer/utils/ios_haptic.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -174,6 +176,36 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
     controller.dispose();
   }
 
+  BannerAd? _ad;
+
+  @override
+  void initState() {
+    super.initState();
+    BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId!,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _ad = ad as BannerAd;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          // ignore: avoid_print
+          print('Ad load failed (code=${error.code} message=${error.message})');
+        },
+      ),
+    ).load();
+  }
+
+  @override
+  void dispose() {
+    _ad?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final minutes = twoDigits(duration.inMinutes.remainder(60));
@@ -226,45 +258,61 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
               ),
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TimerWidget(hours: hours, minutes: minutes, seconds: seconds),
-              const Gap(50),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: togglePlay,
-                  child: Container(
-                    width: double.maxFinite,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: ref.watch(mainColorProvider),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        isPlaying
-                            ? "Stop"
-                            : timer == null
-                                ? "Start"
-                                : "Resume",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20,
+        body: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TimerWidget(hours: hours, minutes: minutes, seconds: seconds),
+                  const Gap(50),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: togglePlay,
+                      child: Container(
+                        width: double.maxFinite,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: ref.watch(mainColorProvider),
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        textAlign: TextAlign.center,
+                        child: Center(
+                          child: Text(
+                            isPlaying
+                                ? "Stop"
+                                : timer == null
+                                    ? "Start"
+                                    : "Resume",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
                     ),
                   ),
+                ],
+              ),
+            ),
+            if (_ad != null)
+              Positioned(
+                bottom: 0,
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.maxFinite,
+                  height: _ad!.size.height.toDouble(),
+                  child: AdWidget(
+                    ad: _ad!,
+                  ),
                 ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );

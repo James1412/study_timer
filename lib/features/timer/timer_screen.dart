@@ -182,7 +182,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
   void initState() {
     super.initState();
     BannerAd(
-      adUnitId: AdHelper.bannerAdUnitId!,
+      adUnitId: AdHelper.bannerAdUnitId,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(

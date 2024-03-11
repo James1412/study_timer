@@ -24,8 +24,6 @@ class WeekBarChart extends ConsumerStatefulWidget {
 }
 
 class _WeekBarChartState extends ConsumerState<WeekBarChart> {
-  late DateTime weekDate = ref.watch(weekDateProvider);
-
   List<IndividualBar> barData() {
     List<IndividualBar> data = [];
     final studySessions = studySessionsOfTheWeek(ref);
@@ -48,7 +46,8 @@ class _WeekBarChartState extends ConsumerState<WeekBarChart> {
 
   @override
   Widget build(BuildContext context) {
-    weekDate = ref.watch(weekDateProvider);
+    DateTime weekDate = ref.watch(weekDateProvider);
+    print(weekDate);
     return Container(
       width: double.maxFinite,
       height: 400,
@@ -180,10 +179,13 @@ class _WeekBarChartState extends ConsumerState<WeekBarChart> {
                 width: 180,
                 child: Center(
                     child: Text(
-                  isInTheWeek(ref, weekDate, DateTime.now())
+                  isInTheWeek(ref, weekDate, onlyDate(DateTime.now().toUtc()))
                       ? "This week"
-                      : isInTheWeek(ref, weekDate,
-                              DateTime.now().subtract(const Duration(days: 7)))
+                      : isInTheWeek(
+                              ref,
+                              weekDate,
+                              onlyDate(DateTime.now()
+                                  .subtract(const Duration(days: 7))))
                           ? "Last week"
                           : "Week of ${DateFormat.yMd().format(weekDate)}",
                   style: const TextStyle(
@@ -194,15 +196,19 @@ class _WeekBarChartState extends ConsumerState<WeekBarChart> {
                 child: GestureDetector(
                   onTap: () {
                     iosLightFeedback();
-                    if (!isInTheWeek(ref, DateTime.now())) {
+                    if (!isInTheWeek(ref, onlyDate(DateTime.now().toUtc()))) {
                       ref.read(weekDateProvider.notifier).changeWeekDate(
-                          weekDate.add(const Duration(days: 7)));
+                            weekDate.add(const Duration(days: 7)),
+                          );
                     }
                   },
                   child: Container(
                     color: Colors.transparent,
                     child: Opacity(
-                        opacity: isInTheWeek(ref, DateTime.now()) ? 0.3 : 1,
+                        opacity:
+                            isInTheWeek(ref, onlyDate(DateTime.now().toUtc()))
+                                ? 0.3
+                                : 1,
                         child: const Icon(FluentIcons.chevron_right_12_filled)),
                   ),
                 ),

@@ -4,11 +4,11 @@ import 'package:study_timer/features/home/utils.dart';
 class WeekDateViewModel extends Notifier<DateTime> {
   @override
   DateTime build() {
-    return onlyDate(DateTime.now());
+    return onlyDate(DateTime.now().toUtc());
   }
 
   void changeWeekDate(DateTime date) {
-    state = onlyDate(date);
+    state = onlyDate(date.toUtc());
   }
 }
 

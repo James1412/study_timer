@@ -47,7 +47,6 @@ class _WeekBarChartState extends ConsumerState<WeekBarChart> {
   @override
   Widget build(BuildContext context) {
     DateTime weekDate = ref.watch(weekDateProvider);
-    print(weekDate);
     return Container(
       width: double.maxFinite,
       height: 400,

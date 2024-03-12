@@ -306,7 +306,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                 child: Container(
                   alignment: Alignment.center,
                   width: double.maxFinite,
-                  height: _ad!.size.height.toDouble(),
+                  height: 70,
                   child: AdWidget(
                     ad: _ad!,
                   ),

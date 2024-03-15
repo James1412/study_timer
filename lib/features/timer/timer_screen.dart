@@ -183,7 +183,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
     super.initState();
     _initGoogleMobileAds();
     BannerAd(
-      adUnitId: AdHelper.bannerAdUnitId,
+      adUnitId: AdHelper.timerScreenBanner,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(

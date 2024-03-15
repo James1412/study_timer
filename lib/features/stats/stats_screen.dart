@@ -2,11 +2,13 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:study_timer/features/settings/settings_screen.dart';
 import 'package:study_timer/features/stats/functions/stats_calculation.dart';
 import 'package:study_timer/features/stats/widgets/grid_stat_box.dart';
 import 'package:study_timer/features/stats/widgets/week_bar_chart.dart';
 import 'package:study_timer/features/stats/widgets/subject_stat_box.dart';
+import 'package:study_timer/utils/ad_helper.dart';
 import 'package:study_timer/utils/ios_haptic.dart';
 
 class StatsScreen extends ConsumerStatefulWidget {
@@ -17,6 +19,34 @@ class StatsScreen extends ConsumerStatefulWidget {
 }
 
 class _StatsScreenState extends ConsumerState<StatsScreen> {
+  BannerAd? _ad;
+
+  @override
+  void initState() {
+    super.initState();
+    BannerAd(
+      adUnitId: AdHelper.statsScreenBanner,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _ad = ad as BannerAd;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    ).load();
+  }
+
+  @override
+  void dispose() {
+    _ad?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,6 +104,15 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               ),
             ],
           ),
+          const Gap(16),
+          if (_ad != null)
+            SizedBox(
+              width: double.maxFinite,
+              height: 100,
+              child: AdWidget(
+                ad: _ad!,
+              ),
+            ),
           const Gap(16),
           const SubjectStatBox(),
         ],

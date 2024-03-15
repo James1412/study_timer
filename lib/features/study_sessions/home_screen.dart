@@ -260,13 +260,15 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                               color: getStatsBoxColor(ref),
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: Icon(IconData(
-                              studySessionsOnDate[sessionIndex].iconData[0],
-                              fontFamily:
-                                  studySessionsOnDate[sessionIndex].iconData[1],
-                              fontPackage:
-                                  studySessionsOnDate[sessionIndex].iconData[2],
-                            )),
+                            child: Icon(
+                              IconData(
+                                studySessionsOnDate[sessionIndex].iconData[0],
+                                fontFamily: studySessionsOnDate[sessionIndex]
+                                    .iconData[1],
+                                fontPackage: studySessionsOnDate[sessionIndex]
+                                    .iconData[2],
+                              ),
+                            ),
                           ),
                         ),
                         title: Text(

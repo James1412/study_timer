@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:study_timer/features/navigation/main_navigation_screen.dart';
 import 'package:study_timer/features/study_sessions/models/study_session_model.dart';
@@ -11,7 +10,6 @@ import 'package:study_timer/utils/hive_box_const.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MobileAds.instance.initialize();
   await hiveInit();
   runApp(
     const ProviderScope(

@@ -41,7 +41,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
   }
 
   void addTime() {
-    const addSeconds = 1;
+    const int addSeconds = 1;
     setState(() {
       final seconds = duration.inSeconds + addSeconds;
       duration = Duration(seconds: seconds);
@@ -181,6 +181,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
   @override
   void initState() {
     super.initState();
+    _initGoogleMobileAds();
     BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
       size: AdSize.banner,
@@ -193,8 +194,6 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
         },
         onAdFailedToLoad: (ad, error) {
           ad.dispose();
-          // ignore: avoid_print
-          print('Ad load failed (code=${error.code} message=${error.message})');
         },
       ),
     ).load();
@@ -204,6 +203,10 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
   void dispose() {
     _ad?.dispose();
     super.dispose();
+  }
+
+  Future<InitializationStatus> _initGoogleMobileAds() {
+    return MobileAds.instance.initialize();
   }
 
   @override
@@ -258,58 +261,57 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
               ),
           ],
         ),
-        body: Stack(
+        body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TimerWidget(hours: hours, minutes: minutes, seconds: seconds),
-                  const Gap(50),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: togglePlay,
-                      child: Container(
-                        width: double.maxFinite,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: ref.watch(mainColorProvider),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Center(
-                          child: Text(
-                            isPlaying
-                                ? "Stop"
-                                : timer == null
-                                    ? "Start"
-                                    : "Resume",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TimerWidget(
+                        hours: hours, minutes: minutes, seconds: seconds),
+                    const Gap(50),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: togglePlay,
+                        child: Container(
+                          width: double.maxFinite,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: ref.watch(mainColorProvider),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: Text(
+                              isPlaying
+                                  ? "Stop"
+                                  : timer == null
+                                      ? "Start"
+                                      : "Resume",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             if (_ad != null)
-              Positioned(
-                bottom: 0,
-                child: Container(
-                  alignment: Alignment.center,
-                  width: double.maxFinite,
-                  height: 70,
-                  child: AdWidget(
-                    ad: _ad!,
-                  ),
+              SizedBox(
+                width: double.maxFinite,
+                height: _ad!.size.height.toDouble(),
+                child: AdWidget(
+                  ad: _ad!,
                 ),
               ),
           ],

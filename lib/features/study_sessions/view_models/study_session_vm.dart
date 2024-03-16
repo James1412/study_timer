@@ -121,7 +121,7 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
       ),
       StudySessionModel(
         subjectName: 'statistics',
-        date: DateTime(2024, 3, 3),
+        date: onlyDate(DateTime.now().subtract(const Duration(days: 8))),
         duration: const Duration(hours: 0, minutes: 30),
         uniqueKey: 0,
         iconData: [
@@ -134,10 +134,10 @@ class StudySessionViewModel extends Notifier<List<StudySessionModel>> {
 
     FirstTimeRepository firstTimeRepository = FirstTimeRepository();
     if (firstTimeRepository.isFirstTime) {
+      firstTimeRepository.setIsFirstTime(false);
       for (StudySessionModel session in studySessions) {
         _repository.addStudySession(session);
       }
-      firstTimeRepository.setIsFirstTime(false);
     }
 
     return _repository.getStudySessions();

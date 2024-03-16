@@ -21,6 +21,7 @@ This app is featured in both IOS app store and Android playstore
 - **Android PlayStore** : https://play.google.com/store/apps/details?id=com.tistory.flutterdevjames.studytimer
 
 ## Screenshots
+![image (1)](https://github.com/James1412/study_timer/assets/73318218/1c595b82-e31b-4ec5-bd51-ecadd0ad45e2)
 
 ## Skills
 

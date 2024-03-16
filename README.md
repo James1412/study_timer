@@ -17,8 +17,8 @@ flutter run
 
 This app is featured in both IOS app store and Android playstore
 
-- **iOS AppStore** :
-- **Android PlayStore** :
+- **iOS AppStore** : https://apps.apple.com/us/app/study-timer-app/id6479210596
+- **Android PlayStore** : https://play.google.com/store/apps/details?id=com.tistory.flutterdevjames.studytimer
 
 ## Screenshots
 
@@ -44,4 +44,4 @@ This app is featured in both IOS app store and Android playstore
 
 ### State Management
 
-I used MVVM architecture with Riverpod v2 for this project.
+In this project, I started with MVVM architecture with Provider and migrated to Riverpod v2.

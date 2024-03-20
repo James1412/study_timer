@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -263,6 +264,10 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
         ),
         body: Column(
           children: [
+            if (_ad != null && !kDebugMode)
+              const SizedBox(
+                height: 100,
+              ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -306,10 +311,10 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                 ),
               ),
             ),
-            if (_ad != null)
+            if (_ad != null && !kDebugMode)
               SizedBox(
                 width: double.maxFinite,
-                height: _ad!.size.height.toDouble(),
+                height: 100,
                 child: AdWidget(
                   ad: _ad!,
                 ),

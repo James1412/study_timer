@@ -1,4 +1,5 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -105,7 +106,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
             ],
           ),
           const Gap(16),
-          if (_ad != null)
+          if (_ad != null && !kDebugMode)
             SizedBox(
               width: double.maxFinite,
               height: 100,
